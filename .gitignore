@@ -1,3 +1,11 @@
+# general systems
+.DS_Store
+Icon
+Icon?
+# for VS code configs
+*.code-workspace
+.vscode/*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
