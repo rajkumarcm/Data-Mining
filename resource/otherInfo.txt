@@ -3,7 +3,7 @@
 
 // # You will have to clear the existing git cache first.
 // # Remove the cache of all the files
-git rm -r --cached .
+// git rm -r --cached .
 
 // # Remove the cache of specific file
 git rm -r --cached <file_name.ext>
