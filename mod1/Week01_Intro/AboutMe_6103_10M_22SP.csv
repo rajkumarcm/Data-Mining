@@ -1,26 +1,115 @@
-,First,Last,Prefer,Team,a-Code,b-Stats,c-Biz,d-Soc Sci,e-Math / Science,f-Visual,Home-town,UG Major,Exp grad year,Favs / Likes,Pet peeve / Dislikes,Other notes,,,,,,,,,
+<<<<<<< HEAD
+First,Last,Prefer,Team,a-Code,b-Stats,c-Biz,d-Soc Sci,e-Math / Science,f-Visual,Home-town,UG Major,Exp grad year,Favs / Likes,Pet peeve / Dislikes,Other notes,,,,,,,,,
 0,Edwin,Lo,Edwin,34,2,1,0,0,2,0,Hong Kong,Physics,2050,problem SolvING,bug bites,"data sci programming with R, python, web programming, current project in typescript, angular",,,,,,,,,
+<<<<<<< HEAD
+<<<<<<< HEAD
+1,Keelin,Arseneault,,,,,,,,4,5,,,,,,,,,,,,,,
+2,Evelyn,Campo Arias,,,,,,,,,,,,,,,,,,,,,,,
+3,Kwan Hang,Chan,,,,,,,,,,,,,,,,,,,,,,,
+4,Brandon,Chin,Brandon or Chin,,2,1,2,2,1,2,"May Pen, Jamaica",Economics,2023,"Sports, Anime",Boring Conversations,,,,,,,,,,
+=======
+1,Keelin,Arseneault,,1,2,2,1,2,2,Hollis New Hampshire,Biology,2023,Playing piano & ukulele,Bad drivers,"MS in Statistics student,full time consultant and data analyst,R,SQL,Tableau,some Python",,,,,
+2,Evelyn,Campo Arias,,,,,,,,,,,,,,,,,,,,,,,
+3,Kwan Hang,Chan,,,,,,,,,,,,,,,,,,,,,,,
+4,Brandon,Chin,Brandon or Chin,,2,1,2,2,1,2,"May Pen, Jamaica",Economics,2023,"Sports, Anime",,,,,,,,,,,
+>>>>>>> 20a03bcecba1f6d95dd7d7daa581c25b2788ad56
+5,Andy,Christian,Andy,,1,1,0,2,0,1,Various,East Asian Studies,2023,Logic Puzzles,Overly slow communication,"inter Python, basic R, basic stats, strong social science background, creative streak"
+6,Rajkumar,Conjeevaram Mohan,Raj,2,2,2,0,0,2,1,"Chennai, IN",Computer Information Systems,Grad,2024,"Fitness, Music, Movies","Bed bugs, noisy environment","AI, Python, SQL, and other ML frameworks"
+7,Daniel,Diaz Rangel,,,,,,,,,,,,,,,,,,,,,,,
+=======
 1,Keelin,Arseneault,,1,2,2,1,2,2,Hollis New Hampshire,Biology,2023,Playing piano & ukulele,Bad drivers,"MS in Statistics student,full time consultant and data analyst,R,SQL,Tableau,some Python",,,,,,,,,,
 2,Evelyn,Campo Arias,Evy,,1,2,0,2,2,1,Colombia,Economics,2022,"Running, cooking, and reading about bioneuroemotion","People who waste water and food ","Portuguese is my favorite language. Experience in R and Stata. ",,,,,,,,,
 3,Kwan Hang,Chan,,,,,,,,,,,,,,,,,,,,,,,
-4,Brandon,Chin,Brandon or Chin,,2,1,2,2,1,2,"May Pen, Jamaica",Economics,2023,"Sports, Anime",Boring Conversations,,,,,,,,,,
+4,Brandon,Chin,Brandon or Chin,,2,1,2,2,1,2,"May Pen, Jamaica",Economics,2023,"Sports, Anime",,,,,,,,,,,
 5,Andy,Christian,,,,,,,,,,,,,,,,,,,,,,,
 6,Rajkumar,Conjeevaram Mohan,,,,,,,,,,,,,,,,,,,,,,,
 7,Daniel,Diaz Rangel,1,2,3,4,1,2,3,4,qro,ind eng,22,"sports, box, partying",meh,hey hey hey,,,,,,,,,
+>>>>>>> e4582b5290878ebd83502df1404bfbcf2b25b990
+8,Meghana,Gantla,,,,,,,,,,,,,,,,,,,,,,,
+<<<<<<< HEAD
+9,Ganesh,Ghimire,,,,,,,,,,,,,,,,,,,,,,,
+10,Illiyuna,Islam 1,2,1,2,1,0, Dhaka, Bangladesh, International Studies, 2022, Crosswords,Reading,Loud chewing,Experience in R, stata and Python
+=======
+9,Ganesh,Ghimire,,,,,,,Nepal,,Data Science, python. 
+10,Illiyuna,Islam,,,,,,,,,,,,,,,,,,,,,,,
+>>>>>>> 2a7f9c8bdbff39a93466f4de4272a35d7db8cace
+11,Adarsh,Kotla,Adarsh," "," 1"," 1"," 1"," 2"," 1"," 2"," Hyderabad"," India"," Interior Design"," 2023"," (Problem solving"," Fit-gap analysis"," Deep learning"," AI built mars habitats)"," Small talk"," Python"," R"," SQL"," tableau"," tensorflow",etc
+12,Sumanth,Nallamotu,Sumanth,,2,1,1,1,2,2,Ashburn,Computational Modeling & Data Analytics,2023,"Food, Travel, Music, Tennis",Poor manners,"Experience in Python, R, AWS, SQL, Tableau",,,,,,,,,
+<<<<<<< HEAD
+13,Yi,Nie,,,,,,,,,,,,,,,,,,,,,,,
+14,Maxwell,Owusu,2,2,1,,,,,,,,,,,,,,,,,,,,
+=======
+13,Yi,Nie,Yi,,1,2,0,0,2,0,Yunnan,Math,2022,Console Game Amine,,R Matlab,,,,,,,,,
+14,Maxwell,Owusu,2,2,1,1,0,2,0,0,Kumasi,Geography,2023,Music and movies,,,,,,,,,,,
+<<<<<<< HEAD
+>>>>>>> 20a03bcecba1f6d95dd7d7daa581c25b2788ad56
+15,Sanjib,Panta,0,2,1,2,2,0,"Kathmandu","Nepal",Statistics,2023,,,,,,,,,,,,,
+=======
+15,Sanjib,Panta,0,2,1,2,2,0,Kathmandu,Nepal,Statistics,2023,,,,,,,,,,,,,
+>>>>>>> e4582b5290878ebd83502df1404bfbcf2b25b990
+16,Tony,Pham,,,,,,,,,,,,,,,,,,,,,,,
+17,Xiao,Qi,,,,,,,,,,,,,,,,,,,,,,,
+18,Adrienne,Rogers,1,2,2,2,1,2,"Blacksburg, VA","Statistics",2023,"Cats,plants,cooking","Chewing with mount open","Experience in R, SQL and dashboarding tools. Current part-time student working full time",,,,,,,,,,,
+19,Akshat,Saini,,1,1,1,1,1,1,"Mumbai","Computer Science","2024","Movies, music, food","snow storms",,,,,,,,,,,
+20,Ksenia E,Shadrina,,,,,,,,,,,,,,,,,,,,,,,
+<<<<<<< HEAD
+21,Robera,Tasissa,,,,,,,,,,,,,,,,,,,,,,,
+22,Hang,Wang,Hang,, 1, 2, 0, 1, 1, 0, Shanxi,China , Civil engineering , 2022,,, programming with R ,,,,,,,,,
+=======
+21,Robera,Tasissa, ,1 ,1 ,1 ,1.5 ,1.5 ,1,0,Silver Spring,Sus Urban Planning,2023,,,,,,,,,,,,
+<<<<<<< HEAD
+
+=======
+22,Hang,Wang,,,,,,,,,,,,,,,,,,,,,,,
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+23,Michael,Womble,,,,,,,,,,,,,,,,,,,,,,,
+24,Xuan,Zou,,,,,,,,,,,,,,,,,,,,,,,
+=======
+23,Michael,Womble,,,1,1,0,0,2,2,"Albuquerque, New Mexico",Chemistry,May 2023,Soccer,,"Python, basic stats, basics R, Currently Chemistry PhD student",,,,,,,,,
+24,Xuan,Zou,,,,,,,,,,,,,,,,,,,,,,,
+>>>>>>> 20a03bcecba1f6d95dd7d7daa581c25b2788ad56
+=======
+>>>>>>> aae51f2a5fa358819a3935b8e5ee711550cf2219
+23,Michael,Womble,,,,,,,,,,,,,,,,,,,,,,,
+24,Xuan,Zou,,,,,,,,,,,,,,,,,,,,,,,
+>>>>>>> e4582b5290878ebd83502df1404bfbcf2b25b990
+=======
+23,Michael,Womble,,,1,1,0,0,2,2,"Albuquerque, New Mexico",Chemistry,"May, 2023",Soccer, ,"Python, basic
+  stats, basics R
+  Currently
+  Chemistry PhD student",,,,,,,,,
+24,Xuan,Zou,,,,,,,,,,,,,,,,,,,,,,,
+=======
+,First,Last,Prefer,Team,a-Code,b-Stats,c-Biz,d-Soc Sci,e-Math / Science,f-Visual,Home-town,UG Major,Exp grad year,Favs / Likes,Pet peeve / Dislikes,Other notes,,,,,,,,,
+0,Edwin,Lo,Edwin,34,2,1,0,0,2,0,Hong Kong,Physics,2050,problem SolvING,bug bites,"data sci programming with R, python, web programming, current project in typescript, angular",,,,,,,,,
+1,Keelin,Arseneault,,1,2,2,1,2,2,Hollis New Hampshire,Biology,2023,Playing piano & ukulele,Bad drivers,"MS in Statistics student,full time consultant and data analyst,R,SQL,Tableau,some Python",,,,,,,,,,
+2,Evelyn,Campo Arias,Evy,,,,,,,,,,,,,,,,,,,,,,
+3,Kwan Hang,Chan,Daniel,,1,1,0,0,2,1,Hong Kong,Zoology,Dec 2022,Building model kits,hiking,live music gigs,meditation,future,chaos and unpredictability,Python,R,Perl,Stats,,
+4,Brandon,Chin,Brandon or Chin,,2,1,2,2,1,2,"May Pen, Jamaica",Economics,2023,"Sports, Anime",Boring Conversations,,,,,,,,,,
+5,Andy,Christian,Andy,,1,1,0,2,0,1,Various,East Asian Studies,2023,Logic Puzzles,Overly slow communication,"inter Python, basic R, basic stats, strong social science background, creative streak"
+6,Rajkumar,Conjeevaram Mohan,Raj,2,2,2,0,0,2,1,"Chennai, IN",Computer Information Systems,Grad,2024,"Fitness, Music, Movies","Bed bugs, noisy environment","AI, Python, SQL, and other ML frameworks"
+7,Daniel,Diaz Rangel,1,2,3,4,1,2,3,4,qro,ind eng,22,"sports, box, partying",meh,hey hey hey,,,,,,,,,
 8,Meghana,Gantla,,,,,,,,,,,,,,,,,,,,,,,
 9,Ganesh,Ghimire,,,,,,,,,,,,,,,,,,,,,,,
-10,Illiyuna,Islam,,,,,,,,,,,,,,,,,,,,,,,
+10,Illiyuna,Islam 1,2,1,2,1,0, Dhaka, Bangladesh, International Studies, 2022, Crosswords,Reading,Loud chewing,Experience in R, stata and Python
 11,Adarsh,Kotla,Adarsh," "," 1"," 1"," 1"," 2"," 1"," 2"," Hyderabad"," India"," Interior Design"," 2023"," (Problem solving"," Fit-gap analysis"," Deep learning"," AI built mars habitats)"," Small talk"," Python"," R"," SQL"," tableau"," tensorflow",etc
 12,Sumanth,Nallamotu,Sumanth,,2,1,1,1,2,2,Ashburn,Computational Modeling & Data Analytics,2023,"Food, Travel, Music, Tennis",Poor manners,"Experience in Python, R, AWS, SQL, Tableau",,,,,,,,,
 13,Yi,Nie,Yi,,1,2,0,0,2,0,Yunnan,Math,2022,Console Game Amine,,R Matlab,,,,,,,,,
 14,Maxwell,Owusu,2,2,1,1,0,2,0,0,Kumasi,Geography,2023,Music and movies,,,,,,,,,,,
 15,Sanjib,Panta,0,2,1,2,2,0,Kathmandu,Nepal,Statistics,2023,,,,,,,,,,,,,
 16,Tony,Pham,,,,,,,,,,,,,,,,,,,,,,,
-17,Xiao,Qi,,,,,,,,,,,,,,,,,,,,,,,
-18,Adrienne,Rogers,,,,,,,,,,,,,,,,,,,,,,,
+17,Xiao,Qi,Xiao,,2,1,0,0,1,2,Shaanxi China,Civil engineering,Dec 2023,,,
+18,Adrienne,Rogers,1,2,2,2,1,2,"Blacksburg, VA","Statistics",2023,"Cats,plants,cooking","Chewing with mount open","Experience in R, SQL and dashboarding tools. Current part-time student working full time",,,,,,,,,,,
 19,Akshat,Saini,,,,,,,,,,,,,,,,,,,,,,,
 20,Ksenia E,Shadrina,,,,,,,,,,,,,,,,,,,,,,,
-21,Robera,Tasissa,,,,,,,,,,,,,,,,,,,,,,,
-22,Hang,Wang,,,,,,,,,,,,,,,,,,,,,,,
-23,Michael,Womble,,,,,,,,,,,,,,,,,,,,,,,
+21,Robera,Tasissa, ,1 ,1 ,1 ,1.5 ,1.5 ,1,0,Silver Spring,Sus Urban Planning,2023,,,,,,,,,,,,
+22,Hang,Wang,Hang,,,,,,,,,,,,,,,,,,,,,,
+23,Michael,Womble,,,1,1,0,0,2,2,"Albuquerque, New Mexico",Chemistry,"May, 2023",Soccer, ,"Python, basic
+  stats, basics R
+  Currently
+  Chemistry PhD student",,,,,,,,,
 24,Xuan,Zou,,,,,,,,,,,,,,,,,,,,,,,
+>>>>>>> 5a7efdfcbfe5b42c9ac7f17c4f470ca7a3a9021c
+>>>>>>> 2a7f9c8bdbff39a93466f4de4272a35d7db8cace
