@@ -48,20 +48,20 @@ print("type of tuple4: %s, length of tuple4: %d" % (type(tuple4), len(tuple4)) )
 # Slicing parts of list/tuple/set
 # Try
 # write some notes/comments for each case, so that you can review them easily yourself
-alist[1:4]  # inclusive on the start index, exclusive of the end index
-alist[:4]
-alist[:]
+print(alist[1:4])  # inclusive on the start index, exclusive of the end index
+print(alist[:4])
+print(alist[:])
 # optional argument, skipping every 1 element with :2 at the end
-alist[1:4:2]
-alist[1:5:2]
-alist[1:3:2]
+print(alist[1:4:2])
+print(alist[1:5:2])
+print(alist[1:3:2])
 # what do you expect the result of this to be?
-alist[1::2]
-# Also try 
-alist[-4]
-alist[-4:-2]
-alist[-4:]
-alist[-2:-4]
+print(alist[1::2])
+# Also try )
+print(alist[-4])
+print(alist[-4:-2])
+print(alist[-4:])
+print(alist[-2:-4])
 
 #%%
 # Now try tuple, set, and dictionary
