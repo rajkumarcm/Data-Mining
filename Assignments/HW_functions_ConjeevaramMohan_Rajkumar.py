@@ -15,9 +15,20 @@
 # and get the desired year and month. (If the system messes up a month or two because of rounding, 
 # that's okay for this exercise).
 # And use this (copy and paste) 
-# monthofyear = ('Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec')
+from calendar import month
+
+
+monthofyear = ('Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec')
 # to simplify your codes.
     
+start_month_idx = 8
+end_month_idx = 4
+for y in range(2021, 2026):
+  start = start_month_idx if y == 2021 else 0
+  end = end_month_idx+1 if y == 2025 else len(monthofyear)
+  for m in range(start, end):
+    print(f"{monthofyear[m]} {y}")
+
 
 ###############  Now:     Functions          Functions             Functions       ###############
 # We will now continue to complete the grade record that we were working on in class.
@@ -33,15 +44,52 @@ def find_grade(total):
   # write an appropriate and helpful docstring
   # ??????    fill in your codes here, be sure you have all A, A-, ... thru D, and F grades completed.
   # grade = ???
-  return grade
+    """
+    Find the grade letter based on the total mark
 
+    :param total: Float value that represent the total mark
+    :return: String value that represent the grade letter
+    """
+  
+    total = round(total)
+    # I personally believe the underlying code is better than comprehensive style
+    # as this is more readable especially when there are many cascading conditions.
+    grade = None
+    if total >= 93:
+      grade = "A"
+    elif total >= 90:
+      grade = "A-"
+    elif total >= 87:
+      grade = "B+"
+    elif total >= 83:
+      grade = "B"
+    elif total >= 80:
+      grade = "B-"
+    elif total >= 77:
+      grade = "C+"
+    elif total >= 73:
+      grade = "C"
+    elif total >= 70:
+      grade = "C-"
+    elif total >= 60:
+      grade = "D"
+    else:
+      grade = "F"
+
+    # Just in case you want to see this here it is.
+    grade = "A" if total >= 93 else "A-" if total >= 90 else "B+" if total >= 87 else "B" \
+             if total >= 83 else "B-" if total >= 80 else "C+" if total >= 77 else "C" \
+               if total >= 73 else "C-" if total >= 70 else "D" if total >= 60 else "F"
+
+    return grade
 # Try:
 print(find_grade(total))
 
 # Also answer these: 
 # What is the input (function argument) data type for total? 
 # What is the output (function return) data type for find_grade(total) ?
-
+#%% [markdown]
+###### The input variable total is of data type float, and it returns String value.
 
 #%%
 ###################################### Question 3 ###############################
@@ -53,7 +101,12 @@ def to_gradepoint(grade):
   # write an appropriate and helpful docstring
   # ??????    fill in your codes here, be sure you have all A, A-, ... thru D, and F grades completed.
   # gradepoint = ???
+  grade_dict = {'A': 4., 'A-':3.7, 'B+':3.3, 'B':3., 'B-':2.7, 'C+':2.3, 'C':2., 'C-':1.7, 'D':1., 'D+':1.3, 'D-':0.7, 'F':0.}
+  gradepoint = grade_dict.get(grade, None)
+  if not gradepoint:
+    raise ValueError("Invalid grade")
   return gradepoint
+
 
 # Try:
 print(to_gradepoint(grade))
@@ -75,6 +128,7 @@ def to_gradepoint_credit(course):
   # eventually, if you need to print out the value to 2 decimal, you can 
   # try something like this for floating point values %f
   # print(" %.2f " % grade_point_credit)
+  grade_point_credit = to_gradepoint(course["grade"]) * course["credits"]
   return grade_point_credit
 
 # Try:
@@ -98,12 +152,14 @@ courses = [
   { "class":"Capstone", "id":"DATS 6101", "semester":"fall", "year":2021, "grade":'A-', "credits":3 } 
   ]
 
+def extract_credit(courses):
+  return courses["credits"]
+
 def find_gpa(courses):
   # write an appropriate and helpful docstring
-  total_grade_point_credit =0 # initialize 
-  total_credits =0 # initialize
-  # ??????    fill in your codes here
-  # gpa = ?????
+  total_grade_point_credit = sum(list(map(to_gradepoint_credit, courses)))
+  total_credits = sum(list(map(extract_credit, courses)))
+  gpa = total_grade_point_credit/total_credits
   return gpa
 
 # Try:
@@ -125,7 +181,15 @@ def printCourseRecord(course):
   # use a single print() statement to print out a line of info as shown here
   # 2018 spring - DATS 6101 : Intro to DS (3 credits) B-  Grade point credits: 8.10 
   # ??????    fill in your codes here
-  return # or return None
+  year = course['year']
+  cname = course['class']
+  cid = course['id']
+  sem = course['semester']
+  grade = course['grade']
+  credits = course['credits']
+  gpc = round(to_gradepoint_credit(course), 2)
+  print(f'{year} {sem} - {cid} : {cname} ({credits} credits) {grade} Grade point credits: {gpc}')
+  return None
   
 # Try:
 printCourseRecord(course)
@@ -145,11 +209,13 @@ printCourseRecord(course)
 def printTranscript(courses):
   # write an appropriate and helpful docstring
   for course in courses:
-    # print out each record as before
+    printCourseRecord(course)
+    gpa = round(find_gpa([course]), 2)
+    print(f'GPA: {gpa}')
   
   # after the completion of the loop, print out a new line with the gpa info
   
-  return # or return None
+  return None
 
 # Try to run, see if it works as expected to produce the desired result
 # courses is already definted in Q4
@@ -186,10 +252,11 @@ def fib(n):
   :param n: the index, starting from 0
   :return: the sequence
   """
-  # assume n is positive integer
-  # ??????    fill in your codes here
+  if n>1:
+    return fib(n-1) + fib(n-2)
+  return 1
 
-  return # return what ????
+  # return # return what ????
 
 
 # Try:
@@ -217,8 +284,16 @@ def dm_fibonancci(n):
   """
   # assume n is positive integer
   # ??????    fill in your codes here
+  if n >2:
+    return dm_fibonancci(n-1) + 2*dm_fibonancci(n-2) - dm_fibonancci(n-3)
+  elif n == 2:
+    return 2
+  elif n == 0:
+    return 1
+  else:
+    return 1
 
-  return # return what ????
+  #return # return what ????
 
 for i in range(12):
   print(dm_fibonancci(i))  # should gives 1,1,2,3,6,10,...
