@@ -54,27 +54,27 @@ def find_grade(total):
     total = round(total)
     # I personally believe the underlying code is better than comprehensive style
     # as this is more readable especially when there are many cascading conditions.
-    grade = None
-    if total >= 93:
-      grade = "A"
-    elif total >= 90:
-      grade = "A-"
-    elif total >= 87:
-      grade = "B+"
-    elif total >= 83:
-      grade = "B"
-    elif total >= 80:
-      grade = "B-"
-    elif total >= 77:
-      grade = "C+"
-    elif total >= 73:
-      grade = "C"
-    elif total >= 70:
-      grade = "C-"
-    elif total >= 60:
-      grade = "D"
-    else:
-      grade = "F"
+    # grade = None
+    # if total >= 93:
+    #   grade = "A"
+    # elif total >= 90:
+    #   grade = "A-"
+    # elif total >= 87:
+    #   grade = "B+"
+    # elif total >= 83:
+    #   grade = "B"
+    # elif total >= 80:
+    #   grade = "B-"
+    # elif total >= 77:
+    #   grade = "C+"
+    # elif total >= 73:
+    #   grade = "C"
+    # elif total >= 70:
+    #   grade = "C-"
+    # elif total >= 60:
+    #   grade = "D"
+    # else:
+    #   grade = "F"
 
     # Just in case you want to see this here it is.
     grade = "A" if total >= 93 else "A-" if total >= 90 else "B+" if total >= 87 else "B" \
@@ -89,7 +89,7 @@ print(find_grade(total))
 # What is the input (function argument) data type for total? 
 # What is the output (function return) data type for find_grade(total) ?
 #%% [markdown]
-###### The input variable total is of data type float, and it returns String value.
+# The input variable total is of data type float, and it returns a String value.
 
 #%%
 ###################################### Question 3 ###############################
@@ -98,10 +98,17 @@ print(find_grade(total))
 grade = 'C-'
 
 def to_gradepoint(grade):
+  """
+  Convert letter grade to grade point
+
+  :param grade: String that represent the letter grade
+  :return: Float value that represent the grade point
+  """
   # write an appropriate and helpful docstring
   # ??????    fill in your codes here, be sure you have all A, A-, ... thru D, and F grades completed.
   # gradepoint = ???
-  grade_dict = {'A': 4., 'A-':3.7, 'B+':3.3, 'B':3., 'B-':2.7, 'C+':2.3, 'C':2., 'C-':1.7, 'D':1., 'D+':1.3, 'D-':0.7, 'F':0.}
+  grade_dict = {'A': 4., 'A-':3.7, 'B+':3.3, 'B':3., 'B-':2.7, \
+                'C+':2.3, 'C':2., 'C-':1.7, 'D':1., 'D+':1.3, 'D-':0.7, 'F':0.}
   gradepoint = grade_dict.get(grade, None)
   if not gradepoint:
     raise ValueError("Invalid grade")
@@ -114,6 +121,8 @@ print(to_gradepoint(grade))
 # What is the input (function argument) data type for find_grade? 
 # What is the output (function return) data type for find_grade(grade) ?
 
+#%% [markdown]
+# The input to to_gradepoint is a String value that represent the letter grade, and the function returns the gradepoint, which is a float value 
 
 #%%
 ###################################### Question 4 ###############################
@@ -122,6 +131,11 @@ print(to_gradepoint(grade))
 course = { "class":"IntroDS", "id":"DATS 6101", "semester":"spring", "year":2018, "grade":'B-', "credits":3 } 
 
 def to_gradepoint_credit(course):
+  """
+  Computes gradepoint credit from grade and credits information
+  :param course: dictionary that contains all information required to compute gradepoint credit
+  :return: Float value representing gradepoint credit
+  """
   # write an appropriate and helpful docstring
   # ??????    fill in your codes here
   # grade_point_credit = ?????
@@ -136,7 +150,8 @@ print(" %.2f " % to_gradepoint_credit(course) )
 
 # What is the input (function argument) data type for to_gradepoint_credit? 
 # What is the output (function return) data type for to_gradepoint_credit(course) ?
-
+#%% [markdown]
+# to_gradepoint_credits takes in course, which is a dictionary that contains several information about the course and returns a float value that represent the gradepoint credit
 
 #%%
 ###################################### Question 5 ###############################
@@ -152,13 +167,27 @@ courses = [
   { "class":"Capstone", "id":"DATS 6101", "semester":"fall", "year":2021, "grade":'A-', "credits":3 } 
   ]
 
-def extract_credit(courses):
-  return courses["credits"]
+def __extract_credit(course):
+  """
+  extract_credit is a helper function that is truly meant for internal purpose
+  and it helps in extracting credits value from the course dictionary
+  
+  :param course: a dictionary that contains several information about the course itself
+  :return: an integer value representing the number of credits for the given course
+  """
+
+  return course["credits"]
 
 def find_gpa(courses):
+  """
+  find_gpa computes the gpa from the grades and credits information altogether.
+  :params courses: a list of dictionaries each consisting of course information
+  :return: a float value representing the gpa
+
+  """
   # write an appropriate and helpful docstring
   total_grade_point_credit = sum(list(map(to_gradepoint_credit, courses)))
-  total_credits = sum(list(map(extract_credit, courses)))
+  total_credits = sum(list(map(__extract_credit, courses)))
   gpa = total_grade_point_credit/total_credits
   return gpa
 
@@ -167,6 +196,10 @@ print(" %.2f " % find_gpa(courses) )
 
 # What is the input (function argument) data type for find_gpa? 
 # What is the output (function return) data type for find_gpa(courses) ?
+
+#%% [markdown]
+# The input to find_gpa is a list of dictionaries in which each element contains information about the course.
+# The function returns a float value representing the gpa.
 
 
 #%%
@@ -177,6 +210,12 @@ print(" %.2f " % find_gpa(courses) )
 course = { "class":"IntroDS", "id":"DATS 6101", "semester":"spring", "year":2018, "grade":'B-', "credits":3 } 
 
 def printCourseRecord(course):
+  """
+  This function does a formatted print of a single course information
+
+  :params course: a dictionary that contains information about the course
+  :returns: None
+  """
   # write an appropriate and helpful docstring
   # use a single print() statement to print out a line of info as shown here
   # 2018 spring - DATS 6101 : Intro to DS (3 credits) B-  Grade point credits: 8.10 
@@ -196,7 +235,9 @@ printCourseRecord(course)
 
 # What is the input (function argument) data type for printCourseRecord? 
 # What is the output (function return) data type for printCourseRecord(course) ?
-
+#%% [markdown]
+# printCourseRecord aims at printing a single course record, and takes in a dictionary course.
+# It does not return a value, in other words, it returns None.
 
 #%%
 ###################################### Question 7 ###############################
@@ -207,14 +248,19 @@ printCourseRecord(course)
 # Cumulative GPA: ?????
  
 def printTranscript(courses):
-  # write an appropriate and helpful docstring
+  """
+  This function prints information of multiple courses and eventually the CGPA.
+
+  :param courses: a list of dictionaries in which each element contains information about the course
+  :return: None
+  """
   for course in courses:
     printCourseRecord(course)
-    gpa = round(find_gpa([course]), 2)
-    print(f'GPA: {gpa}')
   
   # after the completion of the loop, print out a new line with the gpa info
-  
+  gpa = round(find_gpa(courses), 2)
+  print(f'Cumulative GPA: {gpa}')
+
   return None
 
 # Try to run, see if it works as expected to produce the desired result
@@ -233,6 +279,9 @@ printTranscript(courses)
 # What is the input (function argument) data type for printTranscript? 
 # What is the output (function return) data type for printTranscript(courses) ?
 
+#%% [markdown]
+# printTranscript takes in courses, which is a list of dictionaries each containing information about course.
+# This function does not return a value, in other words, it returns None
 
 
 #%% 
@@ -254,10 +303,10 @@ def fib(n):
   """
   if n>1:
     return fib(n-1) + fib(n-2)
-  return 1
-
-  # return # return what ????
-
+  elif n == 0:
+    return 0
+  else:
+    return 1
 
 # Try:
 for i in range(12):
@@ -288,8 +337,6 @@ def dm_fibonancci(n):
     return dm_fibonancci(n-1) + 2*dm_fibonancci(n-2) - dm_fibonancci(n-3)
   elif n == 2:
     return 2
-  elif n == 0:
-    return 1
   else:
     return 1
 
