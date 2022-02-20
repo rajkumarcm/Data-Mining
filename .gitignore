@@ -1,4 +1,6 @@
 # general systems
+.gitignore
+.idea
 .DS_Store
 Icon
 Icon?

@@ -72,12 +72,39 @@ print('#',50*"-")
 # let us write a function find_grade(total) 
 # which will take your course total (0-100), and output the letter grade (see your syllabus)
 # have a habbit of putting in the docstring
+def find_grade(total):
+  total = round(total)
+  grade = None
+  if total >= 93:
+    grade = "A"
+  elif total >= 90:
+    grade = "A-"
+  elif total >= 87:
+    grade = "B+"
+  elif total >= 83:
+    grade = "B"
+  elif total >= 80:
+    grade = "B-"
+  elif total >= 77:
+    grade = "C+"
+  elif total >= 73:
+    grade = "C"
+  elif total >= 70:
+    grade = "C-"
+  elif total >= 60:
+    grade = "D"
+  else:
+    grade = "F"
+  return grade
 total = 82.74
+print(find_grade(total))
 
 #%%
 # Let us write a function to_gradepoint(grade)
 # which convert a letter grade to a grade point. A is 4.0, A- is 3.7, etc
 grade = 'B-'
+def to_gradepoint(grade):
+  return 4.0 if grade == 'A' else 3.7 
 
 #%%
 # Next write a function to_gradepoint_credit(course)
