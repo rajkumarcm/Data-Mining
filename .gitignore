@@ -1,6 +1,8 @@
 # general systems
-.gitignore
+
 .idea
+*.iml
+*.xml
 .DS_Store
 Icon
 Icon?
@@ -137,3 +139,4 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
