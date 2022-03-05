@@ -60,25 +60,25 @@ list1b = [ [41,42,43,44], [51,52,53,54], [61,62,63,64]]
 #
 list1+list1b
 
-#%%
+#%% [markdown]
 # Question: How do you describe (in english) these two lists? What are the "shapes" of the objects?
-#
+# Both list list1 and list1b are list of lists, which appears to be like an array, but not one technically.
 # These are 3 by 4 matrices. Two-dimensional arrays. 
-#
+
+#%%
 # Question: how do you get the element '32' in list1?
-#
+print(list1[2][2])
 # 
 # 
 # Question: how do you get the row of [31,32,33,34] in list1?
-# 
+print(list1[2])
 #
 # 
-#%%
 # Question: How to you get the column of 12, 22, 32 ???
-# 
+print([row[1] for row in list1])
 #
 #%%
-[ row[1] for row in list1 ]
+#[ row[1] for row in list1 ]
 
 #%%
 # OR Loop it

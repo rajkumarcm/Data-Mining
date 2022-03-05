@@ -4,8 +4,8 @@
 #%% [markdown]
 #
 # # HW OOP
-# ## By: xxx
-# ### Date: xxxxxxx
+# ## By: Rajkumar Conjeevaram Mohan
+# ### Date: 2nd March 2022
 #
 
 
@@ -88,7 +88,8 @@ for aline in fh.readlines(): # readlines creates a list of elements; each elemen
   tmp = aline.split(',')
   appl_date.append(tmp[0].strip())
   appl_price_eod.append(float(tmp[1]))
-  
+
+fh.close()
 print(appl_date)
 print(appl_price_eod)
 
