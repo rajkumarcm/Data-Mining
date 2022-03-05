@@ -75,7 +75,7 @@ list1+list1b
 # 
 #%%
 # Question: How to you get the column of 12, 22, 32 ???
-print(list1)
+# 
 #
 #%%
 [ row[1] for row in list1 ]
