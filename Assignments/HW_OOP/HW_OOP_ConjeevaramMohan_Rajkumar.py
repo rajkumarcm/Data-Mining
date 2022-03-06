@@ -174,7 +174,7 @@ class Stock:
     self.delta1 = list(map(lambda x,y: x-y, self.price_eod, eod_shift1))
     if should_print: # Just to avoid being reprinted while running compute_delta2_list
       print(self.name.upper(),": The latest 5 daily changes in delta1: ")
-      for i in range(0,5): print(self.delta1[i], end=", ") # checking the first five values
+      for i in range(0,5): print(round(self.delta1[i], 3), end=", ") # checking the first five values
     return self
   
   def compute_delta2_list(self):
@@ -196,7 +196,7 @@ class Stock:
     self.delta2 = list(map(lambda x, y: x-y, self.delta1, delta1_cp))
     print(f"{self.name.upper()}: The latest 5 daily changes in delta2: ")
     # print('\n',self.name.upper(), ": The latest 5 daily changes in delta2: ")
-    for i in range(5): print(self.delta2[i], end=", ")
+    for i in range(5): print(round(self.delta2[i], 3), end=", ")
     return self
   
   def insert_newday(self, newdate, newprice, newvolume):
@@ -325,13 +325,13 @@ print(f"Over the last 600 days, the best performer would be {best_perf_600}\n")
 #  ######   QUESTION 7    ######   QUESTION 7    ######   QUESTION 7    ######   QUESTION 7    ######  
 #
 # Now see if the insert_newday() method works
-aapl.insert_newday('9/13/19',231.85,32571922)
-print('new dates:',aapl.dates[0:5])
-print('new price_eod:',aapl.price_eod[0:5])
-print('new volumes:',aapl.volumes[0:5])
-print('new delta1:',aapl.delta1[0:5])
-print('new delta2:',aapl.delta2[0:5])
-print('last two days change: ',aapl.nday_change_percent(2))
+aapl.insert_newday('9/13/19', 231.85,32571922)
+print('new dates:', aapl.dates[0:5])
+print('new price_eod:', aapl.price_eod[0:5])
+print('new volumes:', aapl.volumes[0:5])
+print('new delta1:', list(map(lambda x: round(x, 2), aapl.delta1[0:5])))
+print('new delta2:', list(map(lambda x: round(x, 2), aapl.delta2[0:5])))
+print('last two days change: ', round(aapl.nday_change_percent(2), 3))
 # If the above printouts does not look right to you, make sure you fix your 
 # insert_newday function!!
 #
