@@ -90,8 +90,8 @@ for aline in fh.readlines(): # readlines creates a list of elements; each elemen
   appl_price_eod.append(float(tmp[1]))
 
 fh.close()
-print(appl_date)
-print(appl_price_eod)
+print(appl_date, end='\n\n')
+print(appl_price_eod, end='\n\n')
 
 # You should be able to see the lists created from the code above. This is just our test run.
 
@@ -139,7 +139,8 @@ class Stock:
     Stock('AAPL','Apple Inc','9/12/14','9/12/19',filepath)
     """
     with open(filepath,'r') as fh: # leaving the filehandle inside the "with" clause will close it properly when done. Otherwise, remember to close it when finished
-      for aline in fh.readlines(): # readlines creates a list of elements; each element is a line in the txt file, with an ending line return character. 
+      lines = fh.read().split('\n')
+      for aline in lines: # readlines creates a list of elements; each element is a line in the txt file, with an ending line return character.
 
         #  ######   QUESTION 1    ######   QUESTION 1    ######   QUESTION 1    ######   QUESTION 1    ######  
         # Fill in the codes here to put the right info in the lists self.dates, self.price_eod, self.volumes  
@@ -147,14 +148,14 @@ class Stock:
         #  ######  END QUESTION 1 ######  END QUESTION 1 ######  END QUESTION 1 ######  END QUESTION 1 ######  
         tmp_list = aline.split(',')
         self.dates.append(tmp_list[0])
-        self.price_eod.append(tmp_list[1])
-        self.volumes.append(tmp_list[2])
+        self.price_eod.append(float(tmp_list[1]))
+        self.volumes.append(int(tmp_list[2]))
 
     # fh.close() # close the file handle when done if it was not inside the "with" clause
     # print('fh closed:',fh.closed) # will print out confirmation  fh closed: True
     return self
   
-  def compute_delta1_list(self):
+  def compute_delta1_list(self, should_print=True):
     """
     compute the daily change for the entire list of price_eod 
     """
@@ -171,8 +172,9 @@ class Stock:
     # So the copy() function will work. No need for other "deepcopy" variations
     eod_shift1.pop(0) # remove the first element (shifting the day)
     self.delta1 = list(map(lambda x,y: x-y, self.price_eod, eod_shift1))
-    print(self.name.upper(),": The latest 5 daily changes in delta1: ")
-    for i in range(0,5): print(self.delta1[i]) # checking the first five values
+    if should_print: # Just to avoid being reprinted while running compute_delta2_list
+      print(self.name.upper(),": The latest 5 daily changes in delta1: ")
+      for i in range(0,5): print(self.delta1[i], end=", ") # checking the first five values
     return self
   
   def compute_delta2_list(self):
@@ -188,11 +190,13 @@ class Stock:
     # Essentially the same as compute_delta1_list, just on a different list 
     # Again you might want to print out the first few values of the delta2 list to inspect
     #  ######  END QUESTION 2 ######  END QUESTION 2 ######  END QUESTION 2 ######  END QUESTION 2 ######  
-    self.compute_delta1_list()
+    self.compute_delta1_list(should_print=False)
     delta1_cp = self.delta1.copy()
-    delta1_cp.pop()
+    delta1_cp.pop(0)
     self.delta2 = list(map(lambda x, y: x-y, self.delta1, delta1_cp))
-    for i in range(5): print(self.detla2[i])
+    print(f"{self.name.upper()}: The latest 5 daily changes in delta2: ")
+    # print('\n',self.name.upper(), ": The latest 5 daily changes in delta2: ")
+    for i in range(5): print(self.delta2[i], end=", ")
     return self
   
   def insert_newday(self, newdate, newprice, newvolume):
@@ -216,6 +220,7 @@ class Stock:
     #
     # insert newdate to dates[]
     self.dates.insert(0, newdate)
+    self.lastdate = newdate  # I thought this would be more appropriate
     # insert newvolume to volumes[]
     self.volumes.insert(0, newvolume)
     # insert new eod data value to price_eod
@@ -229,7 +234,7 @@ class Stock:
 
     return self
   
-  def nday_change_percent(self,n):
+  def nday_change_percent(self,n, should_print=True):
     """
     calculate the percentage change in the last n days, returning a percentage between 0 and 100, or sometimes higher.
       """
@@ -237,7 +242,8 @@ class Stock:
     # n days here refers to n-1th index as indices start from 0
     change = self.price_eod[0] - self.price_eod[n-1] # calculate the change of price between newest price and n days ago
     percent = change/self.price_eod[n-1] # calculate the percent change (using the price n days ago as the base)
-    print(f"{self.symbol} : Percent change in {n} days is {percent.__round__(2)}%")
+    if should_print:
+      print(f"{self.symbol} : Percent change in {n} days is {percent.__round__(2)}%")
     #  ######  END QUESTION 4 ######  END QUESTION 4 ######  END QUESTION 4 ######  END QUESTION 4 ######  
 
     return percent
@@ -254,16 +260,19 @@ import os
 filepath = os.path.join( os.getcwd(), 'AAPL_daily.csv')
 # or just this should work
 # filepath = 'AAPL_daily.csv'
+print('\n\n')
 aapl = Stock('AAPL','Apple Inc','9/12/14','9/12/19',filepath) # aapl is instantiated!
 
 #%%
 # Great! Now we can get the competitors easily
+print('\n\n')
 filepath = 'MSFT_daily.csv'
 msft = Stock('MSFT','Microsoft Inc','9/12/14','9/12/19',filepath)
 
+print('\n\n')
 filepath = 'GOOG_daily.csv'
 goog = Stock('GOOG','Alphabet Inc','9/12/14','9/12/19',filepath)
-
+print('\n\n')
 
 
 #%%
@@ -272,12 +281,44 @@ goog = Stock('GOOG','Alphabet Inc','9/12/14','9/12/19',filepath)
 # use the nday_change_percent method that you defined
 # Find out the stock performances in their percent changes in the last 
 # (i) 50 days
-# (ii) 200 days (about 1 year)
-# (iii) 600 days (about 3 years)
-# Which one perform best in each of the periods above?? 
-# 
-#  ######  END QUESTION 6 ######  END QUESTION 6 ######  END QUESTION 6 ######  END QUESTION 6 ######  
+should_print=True
+if should_print:
+  print(f"For 50 days")
+perf_50 = {}
+perf_50['Apple'] = aapl.nday_change_percent(50, should_print=should_print)
+perf_50['Microsoft'] = msft.nday_change_percent(50, should_print=should_print)
+perf_50['Google'] = goog.nday_change_percent(50, should_print=should_print)
+best_perf_50 = max(perf_50, key=perf_50.get)
+if should_print:
+  print('\n')
 
+# (ii) 200 days (about 1 year)
+if should_print:
+  print(f"For 200 days")
+perf_200 = {}
+perf_200['Apple'] = aapl.nday_change_percent(200, should_print=should_print)
+perf_200['Microsoft'] = msft.nday_change_percent(200, should_print=should_print)
+perf_200['Google'] = goog.nday_change_percent(200, should_print=should_print)
+best_perf_200 = max(perf_200, key=perf_200.get)
+if should_print:
+  print('\n')
+
+# (iii) 600 days (about 3 years)
+if should_print:
+  print(f"For 600 days")
+perf_600 = {}
+perf_600['Apple'] = aapl.nday_change_percent(600, should_print=should_print)
+perf_600['Microsoft'] = msft.nday_change_percent(600, should_print=should_print)
+perf_600['Google'] = goog.nday_change_percent(600, should_print=should_print)
+best_perf_600 = max(perf_600, key=perf_600.get)
+if should_print:
+  print('\n')
+
+# Which one perform best in each of the periods above?? 
+print(f"Over the last 50 days, the best performer would be {best_perf_50}")
+print(f"Over the last 100 days, the best performer would be {best_perf_200}")
+print(f"Over the last 600 days, the best performer would be {best_perf_600}\n")
+#  ######  END QUESTION 6 ######  END QUESTION 6 ######  END QUESTION 6 ######  END QUESTION 6 ######  
 
 #%%
 # 
