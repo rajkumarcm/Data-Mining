@@ -136,6 +136,7 @@ class Stock:
   def import_history(self, filepath):
     """
     import stock history from csv file, with colunms date, eod_price, volume, and save them to the lists 
+    Stock('AAPL','Apple Inc','9/12/14','9/12/19',filepath)
     """
     with open(filepath,'r') as fh: # leaving the filehandle inside the "with" clause will close it properly when done. Otherwise, remember to close it when finished
       for aline in fh.readlines(): # readlines creates a list of elements; each element is a line in the txt file, with an ending line return character. 
@@ -144,7 +145,10 @@ class Stock:
         # Fill in the codes here to put the right info in the lists self.dates, self.price_eod, self.volumes  
         # Should be similar to the codes in Step 0 above. 
         #  ######  END QUESTION 1 ######  END QUESTION 1 ######  END QUESTION 1 ######  END QUESTION 1 ######  
-
+        tmp_list = aline.split(',')
+        self.dates.append(tmp_list[0])
+        self.price_eod.append(tmp_list[1])
+        self.volumes.append(tmp_list[2])
 
     # fh.close() # close the file handle when done if it was not inside the "with" clause
     # print('fh closed:',fh.closed) # will print out confirmation  fh closed: True
@@ -184,7 +188,11 @@ class Stock:
     # Essentially the same as compute_delta1_list, just on a different list 
     # Again you might want to print out the first few values of the delta2 list to inspect
     #  ######  END QUESTION 2 ######  END QUESTION 2 ######  END QUESTION 2 ######  END QUESTION 2 ######  
-
+    self.compute_delta1_list()
+    delta1_cp = self.delta1.copy()
+    delta1_cp.pop()
+    self.delta2 = list(map(lambda x, y: x-y, self.delta1, delta1_cp))
+    for i in range(5): print(self.detla2[i])
     return self
   
   def insert_newday(self, newdate, newprice, newvolume):
@@ -207,15 +215,15 @@ class Stock:
     # Fill in the codes here 
     #
     # insert newdate to dates[]
-    self.dates.insert('Something Here')
+    self.dates.insert(0, newdate)
     # insert newvolume to volumes[]
-    self.volumes.insert('Something Here')
+    self.volumes.insert(0, newvolume)
     # insert new eod data value to price_eod
-    self.price_eod.insert('Something Here')
+    self.price_eod.insert(0, newprice)
     # calculate and insert new data to delta1
-    self.delta1.insert('Something Here')
+    self.delta1.insert(0, newprice-self.price_eod[1])
     # calculate and insert new data to delta2
-    self.delta2.insert('Something Here')
+    self.delta2.insert(0, self.delta1[0]-self.delta1[1])
     #
     #  ######  END QUESTION 3 ######  END QUESTION 3 ######  END QUESTION 3 ######  END QUESTION 3 ######  
 
@@ -226,8 +234,9 @@ class Stock:
     calculate the percentage change in the last n days, returning a percentage between 0 and 100, or sometimes higher.
       """
     #  ######   QUESTION 4    ######   QUESTION 4    ######   QUESTION 4    ######   QUESTION 4    ######  
-    change = 'What should it be?' # calculate the change of price between newest price and n days ago
-    percent = 'What should it be?' # calculate the percent change (using the price n days ago as the base)
+    # n days here refers to n-1th index as indices start from 0
+    change = self.price_eod[0] - self.price_eod[n-1] # calculate the change of price between newest price and n days ago
+    percent = change/self.price_eod[n-1] # calculate the percent change (using the price n days ago as the base)
     print(f"{self.symbol} : Percent change in {n} days is {percent.__round__(2)}%")
     #  ######  END QUESTION 4 ######  END QUESTION 4 ######  END QUESTION 4 ######  END QUESTION 4 ######  
 
