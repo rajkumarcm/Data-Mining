@@ -194,7 +194,7 @@ class Stock:
     delta1_cp = self.delta1.copy()
     delta1_cp.pop(0)
     self.delta2 = list(map(lambda x, y: x-y, self.delta1, delta1_cp))
-    print(f"{self.name.upper()}: The latest 5 daily changes in delta2: ")
+    print(f"\n{self.name.upper()}: The latest 5 daily changes in delta2: ")
     # print('\n',self.name.upper(), ": The latest 5 daily changes in delta2: ")
     for i in range(5): print(round(self.delta2[i], 3), end=", ")
     return self
@@ -240,8 +240,8 @@ class Stock:
       """
     #  ######   QUESTION 4    ######   QUESTION 4    ######   QUESTION 4    ######   QUESTION 4    ######  
     # n days here refers to n-1th index as indices start from 0
-    change = self.price_eod[0] - self.price_eod[n-1] # calculate the change of price between newest price and n days ago
-    percent = change/self.price_eod[n-1] # calculate the percent change (using the price n days ago as the base)
+    change = self.price_eod[0] - self.price_eod[n] # calculate the change of price between newest price and n days ago
+    percent = (change/self.price_eod[n]) * 100 # calculate the percent change (using the price n days ago as the base)
     if should_print:
       print(f"{self.symbol} : Percent change in {n} days is {percent.__round__(2)}%")
     #  ######  END QUESTION 4 ######  END QUESTION 4 ######  END QUESTION 4 ######  END QUESTION 4 ######  

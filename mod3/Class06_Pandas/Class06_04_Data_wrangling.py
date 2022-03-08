@@ -30,7 +30,6 @@ dfgap.to_csv('gapminder.csv')
 
 
 #%%
-#%%
 # Create one more column 
 # dfgap['gdp'] = dfgap.gdpPercap * dfgap.pop     # doesn't work!
 dfgap['gdp'] = dfgap['gdpPercap'] * dfgap['pop'] # works
@@ -104,7 +103,7 @@ print("\nReady to continue.")
 
 #%%
 # last try on multi values
-dfgap_pvall = dfgap.pivot(index='year', columns='country')
+dfgap_pvall = dfgap.pivot(index='country', columns='year')
 dm.dfChk(dfgap_pvall)
 #
 # What is the shape of this df? (SUPER WIDE)
@@ -115,7 +114,7 @@ print("\nReady to continue.")
 # next try multiple columns, instead of multiple values
 # dfgap_pc2 = dfgap.pivot(index='year', columns=['continent','country'] , values='gdpPercap')
 # above doesn't work, but the next line works.  
-# dfgap_pc2 = dfgap.pivot_table(index='year', columns=['continent','country'] , values='gdpPercap')
+dfgap_pc2 = dfgap.pivot_table(index='year', columns=['continent','country'] , values='gdpPercap')
 #
 # Overall, the difference between pivot and pivot_table in pandas are these:  
 #
@@ -125,7 +124,7 @@ print("\nReady to continue.")
 # * pivot allows "values=" with numeric or string types. pivot_table only allow numeric (with str or categorical columns ignored)
 
 #%% 
-# so here it is, multiple indexes(indicies)/columns, instead of multiple values
+# so here it is, multiple column-index, instead of multiple values
 dfgap_pc2 = dfgap.pivot_table(index='year', columns=['continent','country'], values='gdpPercap')
 # dm.dfChk(dfgap_pc2)
 #
