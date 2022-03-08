@@ -222,6 +222,8 @@ print(pdfib2[2:7], '\n')
 
 print("\nReady to continue.")
 
+# END 20220228
+
 #%%
 # What about 
 print(pdfib3,'\n')

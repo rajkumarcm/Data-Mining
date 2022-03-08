@@ -23,8 +23,8 @@ print('#',50*"-")
 #%%
 # newaxis
 from numpy import newaxis
-a = np.array([4.,2.,6.])
-b = np.array([3.,7.,5.])
+a = np.array([4.,2.,6.]); print(a)
+b = np.array([3.,7.,5.]); print(b)
 print('a[:,newaxis] :\n',a[:,newaxis])
 z3= np.column_stack((a[:,newaxis],b[:,newaxis]))
 print('z3:\n',z3)
@@ -36,7 +36,7 @@ print('#',50*"-")
 
 #%%
 # Splitting Numpy arrays
-a = np.floor(10*np.random.random((2,12)))
+a = np.floor(    10*np.random.random((2,12))   )
 print('a:',a)
 z1 = np.hsplit(a,3) # Split a into 3. If dimension not divisible -> ValueError
 print('type(z1):',type(z1))
@@ -67,6 +67,7 @@ print('e:\n',e)
 #  [20 21 22 23 24]]
 print()
 
+#%%
 sub_indices = np.ix_([1,3],[0,4]) # If your ultimate ndarray is rank 3 (m x n x k), then you will need three arguments
 print('type(sub_indices) :', type(sub_indices))
 print('len(sub_indices) :', len(sub_indices)) # In other words, for rank 3 ndarray, you'll need tuple here of length 3.

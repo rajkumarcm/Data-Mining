@@ -6,7 +6,6 @@ import requests
 import numpy as np
 import matplotlib.pyplot as plt
 #%%
-tmp = dm.api_dsLand('AStudentRecord')
 
 #%%
 def dbCon_dsLand(tbname, ind_col_name = ""):
@@ -135,7 +134,7 @@ def dfChk(dframe, valCnt = False):
 
 # examples:
 # dfChk(df, True)
-
+tmp = api_dsLand('AStudentRecord')
 #%%
 """
 ==================================================
