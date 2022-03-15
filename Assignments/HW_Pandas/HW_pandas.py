@@ -227,14 +227,14 @@ dm.dfChk(dats)
 
 #%%
 # What are the variables in the df? 
-print('The variables in the grade data frame would be:')
+print('\nThe variables in the grade data frame would be:')
 for colname in dats.columns:
   print(colname, end=', ')
 print('')
 
 # What are the data types for these variables?
 
-print('The datatypes for these variables would be:')
+print('\nThe datatypes for these variables would be:')
 for colname, dt in zip(dats.dtypes.index, dats.dtypes.values):
   print(f"{colname}: {dt}")
 
@@ -250,7 +250,8 @@ for i, cname in enumerate(dats.columns):
     norm = 1
   dats_avg[cname] = dats[cname].mean() * norm
 
-print(dats_avg)
+print('\nAverage grades:')
+print(pd.Series(dats_avg))
 
 # write your codes here
 
@@ -263,7 +264,7 @@ print(dats_avg)
 # Hint: use .iloc to select the HW columns, and then use .mean(axis=1) to find the row average
 
 # ######  QUESTION 9      QUESTION 9      QUESTION 9   ##########
-dats.loc[:, 'H1':'H8'].mean(axis=1)
+dats = pd.concat([dats.iloc[:, :8], pd.DataFrame({'HWMean':dats.loc[:, 'H1':'H8'].mean(axis=1)}), dats.iloc[:, 8:]], axis=1)
 # write your codes here
 
 # ######  END of QUESTION 9    ###   END of QUESTION 9   ##########
@@ -276,6 +277,11 @@ dats.head() # check result
 # Calculate the total and add to the df as the last column, named 'total', out of 100 max.
 
 # ######  QUESTION 10      QUESTION 10      QUESTION 10   ##########
+hw_series = dats.loc[:, 'HWMean'] * 0.3
+quiz_series = dats.loc[:, 'Q1'] * 0.1 + dats.loc[:, 'Q2'] * 0.15
+proj_series = dats.loc[:, 'Proj1'] * 0.2 + dats.loc[:, 'Proj2'] * 0.25
+total_grades = hw_series + quiz_series + proj_series
+dats = pd.concat([dats, pd.DataFrame({'total': total_grades})], axis=1)
 
 # write your codes here
 
