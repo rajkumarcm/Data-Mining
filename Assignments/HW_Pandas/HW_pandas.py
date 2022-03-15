@@ -293,7 +293,7 @@ dats.head() # check result
 # Now with the two new columns, calculate the class average for everything again. 
 
 # ######  QUESTION 11      QUESTION 11      QUESTION 11   ##########
-
+dats.mean(axis=0)
 # write your codes here
 
 # ######  END of QUESTION 11    ###   END of QUESTION 11   ##########
@@ -305,6 +305,7 @@ dats.head() # check result
 # ######  QUESTION 12      QUESTION 12      QUESTION 12   ##########
 
 # write your codes here
+dats.to_csv(path_or_buf='dats_new.csv', sep=',', header=True, index=False, compression=None)
 
 # ######  END of QUESTION 12    ###   END of QUESTION 12   ##########
 
@@ -323,9 +324,12 @@ def find_grade(total):
   # ######  QUESTION 13      QUESTION 13      QUESTION 13   ##########
 
   # copy your codes here, either from your Week03 hw, or the solution file
+  grade = "A" if total >= 93 else "A-" if total >= 90 else "B+" if total >= 87 else "B" \
+          if total >= 83 else "B-" if total >= 80 else "C+" if total >= 77 else "C" \
+            if total >= 73 else "C-" if total >= 70 else "D" if total >= 60 else "F"
 
   # ######  END of QUESTION 13    ###   END of QUESTION 13   ##########
-  return # grade  
+  return grade
 
 #%%
 # Let us create one more column for the letter grade, just call it grade.
@@ -334,6 +338,8 @@ def find_grade(total):
 # ######  QUESTION 14      QUESTION 14      QUESTION 14   ##########
 
 # write your code using the .apply() function to obtaine a new column of letter grade (call that new column 'grade') from the total.
+grades = dats.loc[:, 'total'].apply(find_grade)
+dats = pd.concat([dats, pd.DataFrame({'grade':grades})], axis=1)
 
 # ######  END of QUESTION 14    ###   END of QUESTION 14   ##########
 
@@ -344,6 +350,7 @@ def find_grade(total):
 # Hint: use .value_counts() on the grade column to make a bar plot
 
 # ######  QUESTION 15      QUESTION 15      QUESTION 15   ##########
+dats.loc[:, 'grade'].value_counts().plot(kind='bar', title='Bar plot', xlabel='Grade letter', ylabel='Grade count')
 
 # write your codes here
 
