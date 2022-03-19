@@ -16,6 +16,8 @@
 import dm6103 as dm
 import os
 import numpy as np
+import warnings
+warnings.filterwarnings("ignore")
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -27,9 +29,16 @@ print("\nReady to continue.")
 
 # ######  QUESTION 1      QUESTION 1      QUESTION 1   ##########
 
-# What are the variables in the df? 
-# What are the data types for these variables?
+# What are the variables in the df?
+print('\nThe variables in the data frame would be:')
+for colname in dfaapl.columns:
+  print(colname, end=', ')
+print('')
 
+# What are the data types for these variables?
+print('\nThe datatypes for these variables would be:')
+for colname, dt in zip(dfaapl.dtypes.index, dfaapl.dtypes.values):
+  print(f"{colname}: {dt}")
 # ######  END of QUESTION 1    ###   END of QUESTION 1   ##########
 
 #%%
@@ -173,7 +182,8 @@ class Stock:
     percent = change * 100
     
     # ######  END of QUESTION 4    ###   END of QUESTION 4   ##########
-    print(self.symbol,": Percent change in",n,"days is {0:.2f}".format(percent))
+    # print(self.symbol,": Percent change in",n,"days is {0:.2f}".format(percent))
+    print(f"{self.symbol}: Percent change in {n} days is {round(percent, 2)}%")
     return percent
   
 
@@ -252,6 +262,16 @@ for i, cname in enumerate(dats.columns):
 
 print('\nAverage grades:')
 print(pd.Series(dats_avg))
+dats_avg = pd.Series(dats_avg)
+
+#------------------------If you wish to see for each individual component averaged... Then here is the answer
+# 
+
+print(f"HW average: {dats_avg.loc['H1':'H8'].mean()}")
+print(f"Quiz average: {dats_avg.loc['Q1':'Q2'].mean()}")
+print(f"Proj average: {dats_avg.loc['Proj1':'Proj2'].mean()}")
+
+#----------------------------------
 
 # write your codes here
 
@@ -293,7 +313,29 @@ dats.head() # check result
 # Now with the two new columns, calculate the class average for everything again. 
 
 # ######  QUESTION 11      QUESTION 11      QUESTION 11   ##########
-dats.mean(axis=0)
+#dats.mean(axis=0)
+#------------------------------------------------
+dats_avg = {cname:float(0) for cname in dats.columns}
+for i, cname in enumerate(dats.columns):
+  norm = 10
+  if i >=9:
+    norm = 1
+  dats_avg[cname] = dats[cname].mean() * norm
+
+print('\nAverage grades:')
+print(pd.Series(dats_avg))
+dats_avg = pd.Series(dats_avg)
+
+#------------------------If you wish to see for each individual component averaged... Then here is the answer
+# 
+
+print(f"HW average: {dats_avg.loc['HWMean']}")
+print(f"Quiz average: {dats_avg.loc['Q1':'Q2'].mean()}")
+print(f"Proj average: {dats_avg.loc['Proj1':'Proj2'].mean()}")
+
+#----------------------------------
+
+
 # write your codes here
 
 # ######  END of QUESTION 11    ###   END of QUESTION 11   ##########
