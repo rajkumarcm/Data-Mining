@@ -8,23 +8,34 @@ import matplotlib.pyplot as plt
 # Pandas Series
 s1 = pd.Series(); print(s1)
 
+#%%
 data = np.array(['a','b','c','d'])
 s2 = pd.Series(data)
 print(s2)
 
+#%%
 s3 = pd.Series(data, index=[3,2,1,0])
 print(s3)
 
+#%%
 data = {'0' : 'a', '1' : 'b', '2' : 'c', '3': 'd'}
 s4 = pd.Series(data)
 print(s4)
 
+#%%
 s5 = pd.Series(data,index=['a','b','c','d'])
 print(s5)
 
+#%%
+
+tmp_df1 = pd.DataFrame(data, index=['one'])
+tmp_df1
+
+#%%
 s6 = pd.Series(0, index=[0, 1, 2, 3])
 print(s6)
 
+#%%
 s7 = pd.Series([1,2,3,4,5],index = ['a','b','c','d','e'])
 print (s7[3]) ;print (s7[3:]);print (s7[:3])
 print('#',50*"-")
@@ -35,6 +46,7 @@ print(counts)
 print(counts.values)
 print(counts.index)
 
+#%%
 stuff = pd.Series([10, 20, 30, 40], index=['apple', 'temple', 'maple', 'sample'])
 
 print(stuff)
@@ -42,6 +54,7 @@ print(stuff['apple'])
 print(stuff[[name.endswith('mple') for name in stuff.index]])
 print(stuff[0])
 
+#%%
 stuff.name = 'MyDataFrame'
 stuff.index.name = 'itmes'
 
@@ -64,65 +77,92 @@ df2 = pd.DataFrame(data)
 print("Checking...")
 print('type(data) :')
 print(type(data))
+#%%
 print('df2 :')
 print(df2)
+#%%
 print('type(df2) :')
 print(type(df2))
+#%%
 print('df2[0] :')
 print(df2[0])
+#%%
 print('type(df2[0]) :')
 print(type(df2[0]))
+#%%
 print('df2.values :')
 print(df2.values)
+#%%
 print('type(df2.values) :')
 print(type(df2.values))
 
 #%%
-data = [['apples',10],['orange',20],['Bananas',30]]
-df3 = pd.DataFrame(data,columns=['Name','Count'], dtype=float)
+data = [['apples',10], ['orange',20], ['Bananas',30]]
+df3 = pd.DataFrame(data, columns=['Name','Count'], dtype=float)
 print(df3)
 
-data = {'Name':['apples', 'orange', 'Bananas'],'Count':[10, 20, 30]}
+#%%
+data = {'Name':['apples', 'orange', 'Bananas'], 'Count':[10, 20, 30]}
 df4 = pd.DataFrame(data)
 df5 = pd.DataFrame(data, index=['In1','In2','In3'])
 print(df4)
 
+#%%
 data = [{'a': 1, 'b': 2},{'a': 5, 'b': 10, 'c': 20}]
 df6 = pd.DataFrame(data, index=['first', 'second'])
+df6
+#%%
 df7 = pd.DataFrame(data, index=['first', 'second'], columns=['a', 'b'])
+df7
+#%%
 df8 = pd.DataFrame(data, index=['first', 'second'], columns=['a', 'bb'])
+df8
+#%%
 print(df6); print(df7); print(df8)
 print('#',50*"-")
 
 # %%
 df9 = { 'one' : pd.Series([1, 2, 3], index=['a', 'b', 'c']), 'two' : pd.Series([3, 2, 1], index=['a', 'b', 'c'])}
-
 df9 = pd.DataFrame(df9)
-print(df9)
+df9
+
+#%%
+#print(df9)
 print(df9 ['one'])
-df9['three']=pd.Series([-1,-2,-3],index=['a','b','c'])
-df9['four']=df9['one']+df9['three']
+
+#%%
+df9['three'] = pd.Series([-1, -2, -3], index=['a', 'b', 'c'])
+df9['four'] = df9['one'] + df9['three']
+
 print(df9)
 del(df9['three'])
 print(df9)
 
-print(df9.loc['b'])
-print(df9.iloc[1])
+#%%
+# print(df9.loc['b'])
+# print(df9.iloc[1])
 print(df9[2:3])
 
-df10 = pd.DataFrame([{'one':5, 'two':6,'four':7}],index = ['e'])
+#%%
+df10 = pd.DataFrame([{'one':5, 'two':6, 'four':7}],index = ['e'])
 df11 = df9.append(df10)
 print(df11)
+
+#%%
 df12 = df11.drop('e') 
 print('df11: ')
 print(df11) # notice that the drop function did not change df11.
+
+#%%
 print('df12: ')
 print(df12)
+
+#%%
 print('\nTry again:')
 df11.drop('e', inplace=True)
 print('df11 with inplace=True: ')
 print(df11) # This time it affected df11
-print('#',50*"-")
+
 
 #%%
 # Pandas Dataframe Examples
@@ -131,22 +171,51 @@ data = pd.DataFrame({'value':[10, 20, 30, 40],
                      'patient':[1, 1, 1, 2],
                      'disease':['Flu', 'Cancer', 'Infection','Aneurysm']})
 print(data)
+
+#%%
 print(data[['disease', 'value']])
+
+#%%
 # Watch out for the difference of the two below:
 print(data['disease'])
+
+#%%
 print(data[['disease']])
+
+#%%
 print(type(data['disease']))
+
+#%%
 print(type(data[['disease']]))
-#
+
+
+#%%
 print(data.columns)
+
+
+#%%
 print(data.dtypes)
+
+#%%
 print(data['disease']==data.disease)
+
+#%%
 print(data.loc[1])
+
+#%%
 print(data.head())
+
+#%%
 print(data.tail(3))
+
+#%%
 print(data.shape)
+
+#%%
 data['year'] = 2013
 print(data)
+
+#%%
 # data.value[[0,1,3]]=[1,2,3]
 print(data)
 print('#',50*"-")
@@ -157,21 +226,44 @@ print('#',50*"-")
 d = {'Name':pd.Series(['a','b','c','d']),
      'Age':pd.Series([10,15,20,30]),
      'Rating':pd.Series([4,3,2,1])}
-
-
 df = pd.DataFrame(d)
+df
+#%%
+
 print(df)
+
+#%%
 print(df.sum())
+
+#%%
 print(df.sum(1))
 
+#%%
 print(df.mean())
+
+#%%
 print(df.std())
+
+#%%
 print(df.count())
+
+#%%
 print(df.min())
+
+#%%
 print(df.median())
+
+#%%
 print(df.mode())
+
+#%%
 print(df.cumsum())
+
+#%%
+
 print (df.describe(include='all'))
+
+#%%
 print('#',50*"-")
 
 #%%
@@ -179,16 +271,26 @@ print('#',50*"-")
 s = pd.Series([1,2,3,4,5,4])
 print(s.pct_change())
 
+#%%
 df = pd.DataFrame(np.random.rand(3, 2))
+df
+
+#%%
 print(df.pct_change())
+
+#%%
+
 s1 = pd.Series(np.random.rand(10))
 s2 = pd.Series(np.random.rand(10))
 print(s1.cov(s2))
+
+#%%
 
 df = pd.DataFrame(np.random.randn(3, 3), columns=['a', 'b', 'c'])
 print(df['a'].cov(df['b']))
 print(df.cov())
 
+#%%
 df = pd.DataFrame(np.random.randn(15, 3),
 index = pd.date_range('1/1/2019', periods=15),
 columns = ['A', 'B', 'C'])
@@ -199,15 +301,26 @@ print('#',50*"-")
 #%%
 # Aggregate functions
 df = pd.DataFrame(np.random.randn(15, 3),
-index = pd.date_range('1/1/2019', periods=15),
-columns = ['A', 'B', 'C'])
-
+                  index = pd.date_range('1/1/2019', periods=15),
+                  columns = ['A', 'B', 'C'])
+df
+#%%
 R = df.rolling(window=3,min_periods=1)
 print(R)
+
+#%%
 print(R.aggregate(np.sum))
+
+#%%
 print(R['A'].aggregate(np.sum))
+
+#%%
 print(R[['A','B']].aggregate([np.mean,np.std]))
+
+#%%
 print(R.aggregate({'A' : np.sum,'B' : np.count_nonzero}))
+
+#%%
 print('#',50*"-")
 
 #%%
@@ -221,14 +334,15 @@ print(df)
 # https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.pipe.html 
 df.pipe(adder, 2)
 
+#%%
 # Apply
 # https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.apply.html 
 print(df.apply(np.mean))
 print(df.apply(np.mean, axis=1))
 
-df['col1'].map(lambda x:x*2)
-print(df.apply(np.mean, axis=1))
-print('#',50*"-")
+# df['col1'].map(lambda x:x*2)
+# print(df.apply(np.mean, axis=1))
+# print('#',50*"-")
 
 #%%
 # Reindex, Rename
@@ -254,13 +368,15 @@ df = pd.DataFrame({
    'B': np.random.rand(20),
    'D': np.random.normal(100, 10, size=(20)).tolist()
                   })
-print(df)
-for col in df:
-   print(col)
+df
+# for col in df:
+#    print(col)
 
+#%%
 for key,value in df.iteritems():
    print(key,value)
 
+#%%
 for row_index,row in df.iterrows():
    print (row_index,row)
 print('#',50*"-")
@@ -287,20 +403,44 @@ print('#',50*"-")
 #%%
 # String support
 s = pd.Series(['Superman', 'Spider Man', 'Hello', '@gmail','1234','Sillyman'])
-print(s)
+s
+
+#%%
 print(s.str.lower())
+
+#%%
 print(s.str.upper())
+
+#%%
 print(s.str.len())
+
+#%%
 print(s.str.strip())
+
+#%%
 print(s.str.split(' '))
+
+#%%
 print(s.str.cat(sep='-'))
+
+#%%
 print(s.str.get_dummies())
+
+#%%
 print(s.str.contains('@'))
+
+#%%
 print(s.str.replace('@','-'))
+
+#%%
 print(s.str.count('m'))
+
+#%%
 print(s.str. startswith ('S'))
+
+#%%
 print(s.str.endswith('4'))
-print('#',50*"-")
+
 
 #%%
 # Indexing, slicing, subsetting
@@ -328,28 +468,46 @@ print('#',50*"-")
 #%%
 # Missing values
 df13 = pd.DataFrame(np.random.randn(5, 3), index=['a', 'c', 'e', 'f', 'h'],columns=['one', 'two', 'three'])
-print(df13)
+df13
+
+#%%
 df14 = df13.reindex(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'])
-print(df14)
+df14
+
+#%%
 print(df14['one'].isnull())
+
+#%%
 print(df14['one'].notnull())
+
+#%%
 print(df14['one'].sum())
+
+#%%
 print(df14['one'].sum())
-print(df.fillna(0))
+
+#%%
+df14.fillna(0)
+
+#%%
 df15 = df13.reindex(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'])
-print(df15.dropna())
+df15.dropna()
+
+#%%
 df16 = df13.reindex(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'])
-print(df16.dropna(axis=1))
-print(df.replace({1:0,2:0}))
-print('#',50*"-")
+df16.dropna(axis=1)
+
+#%%
+print(df.replace({1:0, 2:0}))
+#print('#',50*"-")
 
 #%%
 # GroupBy
 ipl_data = {'Team': ['Riders', 'Riders', 'Devils', 'Devils', 'Kings',
-         'kings', 'Kings', 'Kings', 'Riders', 'Royals', 'Royals', 'Riders'],
-         'Rank': [1, 2, 2, 3, 3,4 ,1 ,1,2 , 4,1,2],
-         'Year': [2014,2015,2014,2015,2014,2015,2016,2017,2016,2014,2015,2017],
-         'Points':[876,789,863,673,741,812,756,788,694,701,804,690]}
+            'kings', 'Kings', 'Kings', 'Riders', 'Royals', 'Royals', 'Riders'],
+            'Rank': [1, 2, 2, 3, 3,4 ,1 ,1,2 , 4,1,2],
+            'Year': [2014,2015,2014,2015,2014,2015,2016,2017,2016,2014,2015,2017],
+            'Points':[876,789,863,673,741,812,756,788,694,701,804,690]}
 df = pd.DataFrame(ipl_data)
 print(df)
 print(df.groupby('Team').groups)
