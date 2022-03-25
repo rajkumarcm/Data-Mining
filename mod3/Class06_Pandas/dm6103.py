@@ -75,16 +75,20 @@ def api_dsLand(tbname, ind_col_name = ""):
   except ValueError: print(f'Value Error while converting json into dataframe. Please contact the administrator.')
   except Error as e: print(f'Error while converting json into dataframe. {e}. Please contact the administrator.')
   
-  # df seems load okay at this point
-  if (ind_col_name and ind_col_name in df): df.set_index(ind_col_name, inplace=True)  # if given col_name exist, make it the index.
-  
-  # df is loaded from json now. Default values is object/string everywhere.
+  # df seems load okay at this point. Default values is object/string everywhere.
   # try to convert all possible ones to numeric
   for col in df.columns:
     try: df[col]=pd.to_numeric(df[col])
     except ValueError: pass
     except: pass
 
+  # set index if given
+  # if (ind_col_name and ind_col_name in df): df.set_index(ind_col_name, inplace=True)  # if given col_name exist, make it the index.
+  try: df.set_index(ind_col_name, inplace=True)
+  except ValueError: pass
+  except TypeError: pass
+  except: pass
+  
   print(f'Dataframe from DSLand API is loaded.')
   return df
 

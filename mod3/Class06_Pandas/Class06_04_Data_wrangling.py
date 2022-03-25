@@ -90,6 +90,8 @@ print("\nReady to continue.")
 # There are different ways you can pull info from this structure
 print( dfgap_pv2.lifeExp[1952] ) # this pull out the column of 1952
 # print(dfgap_pv2.lifeExp['Spain'])  # This does not work on row selection
+
+#%%
 print(dfgap_pv2.lifeExp['Spain':'Sri Lanka']) # BUT this works! Pay attention, pandas slicing does include the end value!
 print(dfgap_pv2.lifeExp['Spain':'Spain'])  # So this works too, and it is NOT EMPTY
 print(dfgap_pv2.lifeExp[1952]['Spain']) # This gives you the data for Spain at 1952
