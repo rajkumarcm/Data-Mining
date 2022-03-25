@@ -68,7 +68,7 @@ from bs4 import BeautifulSoup
 
 #%%
 # Basic setup, test chrome launch
-driver = webdriver.Chrome(r'/Users/elo/Downloads/dev/chromedriver')
+driver = webdriver.Chrome(r'C:\\Users\\Rajkumar\\Downloads\\dev\\chromedriver.exe')
 # also need to install and locate the webdriver.Chrome location
 # for my install, I need to set 
 # driver = webdriver.Chrome(r'/Users/elo/Downloads/dev/chromedriver')  # mac OS
@@ -97,7 +97,7 @@ def getGovWeatherTemperature(soup):
 
 
 # driver start
-driver = webdriver.Chrome(r'/Users/elo/Downloads/dev/chromedriver')
+driver = webdriver.Chrome(r'C:\\Users\\Rajkumar\\Downloads\\dev\\chromedriver.exe')
 driver.get("https://www.weather.gov")
 
 # set up list for looping later

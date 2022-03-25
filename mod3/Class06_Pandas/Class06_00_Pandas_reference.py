@@ -351,21 +351,40 @@ ipl_data = {'Team': ['Riders', 'Riders', 'Devils', 'Devils', 'Kings',
          'Year': [2014,2015,2014,2015,2014,2015,2016,2017,2016,2014,2015,2017],
          'Points':[876,789,863,673,741,812,756,788,694,701,804,690]}
 df = pd.DataFrame(ipl_data)
-print(df)
-print(df.groupby('Team').groups)
-print(df.groupby(['Team','Year']).groups)
+df
+
+#%%
+df.groupby('Team').groups
+
+#%%
+df.groupby(['Team','Year']).groups
+
+#%%
 grouped = df.groupby('Year')
-for name,group in grouped:
+for name, group in grouped:
     print(name)
     print(group)
+
+#%%
 print(grouped.get_group(2014))
 print(grouped['Points'].agg(np.mean))
+
+#%%
 grouped = df.groupby('Team')
-print(grouped.agg(np.size))
+grouped['Year'].agg(np.size)
+
+#%%
+for name, group in grouped:
+    print(name)
+    print(group['Points'].rank(ascending=False))
+
+#%%
 score = lambda x: (x - x.mean()) / x.std()*10
 print(grouped.transform(score))
+
+#%%
 print(df.groupby('Team').filter(lambda x: len(x) >= 3))
-print('#',50*"-")
+# print('#',50*"-")
 
 #%%
 # Merging and Joining
@@ -373,17 +392,27 @@ dfl = pd.DataFrame({
          'in':[1,2,3,4],
          'Name': ['Amir', 'Brian', 'James', 'Mike'],
          'id':['id1','id2','id3','id4']})
+dfl
+
+#%%
 dfr = pd.DataFrame(
          {'in':[1,2,3,4],
          'Name': ['Li', 'Brian', 'Bran', 'Xu'],
          'id':['id2','id4','id3','id1']})
-print(dfl)
-print(dfr)
+dfr
+
+#%%
 print(pd.merge(dfl,dfr,on='in'))
+
+#%%
 print(pd.merge(dfl,dfr,on=['in','id']))
+
+#%%
 print(pd.merge(dfl,dfr,on='id', how='left'))
+
+#%%
 print(pd.merge(dfl,dfr,on='id', how='right'))
-print('#',50*"-")
+
 
 #%%
 # Concatenate, append
@@ -391,40 +420,76 @@ dfl = pd.DataFrame({
          'in':[1,2,3,4],
          'Name': ['Amir', 'Brian', 'James', 'Mike'],
          'id':['id1','id2','id3','id4']})
+dfl
+
+#%%
 dfr = pd.DataFrame(
          {'in':[1,2,3,4],
          'Name': ['Li', 'Brian', 'Bran', 'Xu'],
          'id':['id2','id4','id3','id1']})
+dfr
+
+#%%
 print(pd.concat([dfl,dfr],keys=['x','y']))
+
+#%%
 print(pd.concat([dfl,dfr],keys=['x','y'],ignore_index=True))
+
+#%%
 print(pd.concat([dfl,dfr],keys=['x','y'],axis=1))
+
+#%%
 print(dfl.append(dfr))
+
+#%%
 print(dfl.append([dfl,dfl,dfr]))
 
+#%%
 print(pd.Timestamp(1283447255,unit='s'))
+
+#%%
 print(pd.date_range("12:00", "15:30", freq="30min").time)
-print('#',50*"-")
+
+#%%
+pd.date_range("29/03/2022", periods=10)
+
 
 #%%
 # Visualization 
 # We will re-visit these when we formally introduce the matplotlib library
 df = pd.DataFrame(np.random.rand(9,3),index=pd.date_range('1/1/2019', periods=9), columns=list('ABC'))
 print(df)
+
+#%%
 df.plot()
 plt.show()
+
+#%%
 df = pd.DataFrame(np.random.rand(9,3),columns=['a','b','c'])
 df.plot.bar()
 plt.show()
+
+#%%
 df.plot.barh(stacked=True)
 plt.show()
+
+#%%
 df.plot.hist(bins=20)
 plt.show()
+
+#%%
 df.plot.box()
 plt.show()
+
+#%%
 df.plot.area()
 plt.show()
+
+#%%
 df.plot.scatter(x='a', y='b')
 plt.show()
+
+#%%
 df.plot.pie(subplots=True)
 plt.show()
 print('#',50*"-")
