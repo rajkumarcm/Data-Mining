@@ -9,13 +9,14 @@ import requests
 from bs4 import BeautifulSoup
 # from time import sleep
 import re # regular expressions
-
+from lxml import etree
 # # Web scraping
 #
 
 #%%
 def getUrl(sym):
-  url = 'https://money.cnn.com/quote/quote.html?symb=' + sym.upper()
+  #url = 'https://money.cnn.com/quote/quote.html?symb=' + sym.upper()
+  url = 'https://www.wunderground.com/weather/us/dc/20052'
   return url 
 
 def getSoup(url,timer=0,parser=''):
@@ -24,7 +25,8 @@ def getSoup(url,timer=0,parser=''):
   p = parser if ( parser=='lxml' or parser=='html.parser') else 'html5lib'
   if (timer > 0):
       print('slept',timer,'s')
-      r = requests.get(url, timeout = timer )
+
+      r = requests.get(url, timeout = timer, headers=headers )
   else:
       r = requests.get(url)
   s = BeautifulSoup(r.content, p) # or 'lxml' or 'html.parser'
