@@ -63,21 +63,16 @@ def getUrl(zipcode):
   url = 'https://www.wunderground.com/weather/us/'+zipcode # zipcode should be in the format:  stateAbbreviation/five-digit-zipcode like dc/20052
   return url 
 
-def getSoup(url,parser=''):
-  # ######  QUESTION 1      QUESTION 1      QUESTION 1   ##########
-
-  # write your codes here
-
-  # ######  END of QUESTION 1    ###   END of QUESTION 1   ##########
-  return   # return some soup
+def getSoup(url, parser=''):
+  headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36'}
+  p = parser if (parser == 'lxml' or parser == 'html.parser') else 'html5lib'
+  r_object = requests.get(url, headers=headers)
+  return BeautifulSoup(r_object.content, p)
 
 def getTempHiLo(soup): # get the block of values of hi-lo temperature on this site
-  # ######  QUESTION 2      QUESTION 2      QUESTION 2   ##########
-
-  # write your codes here
-
-  # ######  END of QUESTION 2    ###   END of QUESTION 2   ##########
-  return # return the text for the hi-lo temperatures
+  hi = soup.select('div.condition-data > div.hi-lo > span.hi')[0].text
+  lo = soup.select('div.condition-data > div.hi-lo > span.lo')[0].text
+  return (hi ,lo)
 
 def getDailyTemp(filename): 
   # the source file header has the list of zip codes I want to keep track. 
@@ -101,6 +96,14 @@ def getDailyTemp(filename):
   # You can run the current codes to see what is the df_new and df_last look like. 
   # Need to get the new Temperatures for each location/zip, and put them in the new data frame 
   # Then insert that df_new to the top of df_last.
+  zips = df_last.columns
+  for zip_code in zips:
+    hi, lo = getTempHiLo(getSoup(getUrl(zip_code)))
+    df_new.loc[tdaystr, zip_code] = f'{lo} | {hi}'
+
+  # There are two ways to add one on top of the other
+  # pd.concat([df_new, df_last], axis=0)
+  df_last = df_new.append(df_last)
 
   # ######  END of QUESTION 3    ###   END of QUESTION 3   ##########
   
