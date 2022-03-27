@@ -88,7 +88,8 @@ print("\nReady to continue.")
 # We will need this function soon. 
 # Woring backwards...
 def getGovWeatherTemperature(soup):
-  selectTemp = soup.select('div#current_conditions-summary p.myforecast-current-lrg') # return a list
+  # selectTemp = soup.select('div#current_conditions-summary p.myforecast-current-lrg') # return a list
+  selectTemp = soup.select('div#current_conditions-summary > p.myforecast-current-lrg')  # return a list
   temp = (selectTemp[0].text) if (len(selectTemp)==1) else "error"
   # print(f"temperature found to be {temp}") 
   return temp

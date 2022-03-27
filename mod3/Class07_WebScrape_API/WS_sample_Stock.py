@@ -57,7 +57,7 @@ filepath = 'stockportfolio.csv'
 def getDayQuotes(filepath):
   # import datetime
   tday = datetime.datetime.today()
-  if tday.weekday() > 4 : return None   # 6-Sunday,5-Saturday, do nothing
+  # if tday.weekday() > 4 : return None   # 6-Sunday,5-Saturday, do nothing
   tdaystr = tday.strftime('%Y-%m-%d')
 
   # open file, import df
