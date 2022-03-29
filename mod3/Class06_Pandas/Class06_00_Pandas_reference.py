@@ -110,6 +110,7 @@ print(df9.loc['b'])
 print(df9.iloc[1])
 print(df9[2:3])
 
+#%%
 df10 = pd.DataFrame([{'one':5, 'two':6,'four':7}],index = ['e'])
 df11 = df9.append(df10)
 print(df11)
@@ -161,17 +162,28 @@ d = {'Name':pd.Series(['a','b','c','d']),
 
 df = pd.DataFrame(d)
 print(df)
+#%%
 print(df.sum())
-print(df.sum(1))
 
+#%%
+print(df.sum(1))
+#%%
 print(df.mean())
+#%%
 print(df.std())
+#%%
 print(df.count())
+#%%
 print(df.min())
+#%%
 print(df.median())
+#%%
 print(df.mode())
+#%%
 print(df.cumsum())
+#%%
 print (df.describe(include='all'))
+#%%
 print('#',50*"-")
 
 #%%
@@ -179,20 +191,26 @@ print('#',50*"-")
 s = pd.Series([1,2,3,4,5,4])
 print(s.pct_change())
 
+#%%
 df = pd.DataFrame(np.random.rand(3, 2))
 print(df.pct_change())
+
+#%%
 s1 = pd.Series(np.random.rand(10))
 s2 = pd.Series(np.random.rand(10))
 print(s1.cov(s2))
 
+#%%
 df = pd.DataFrame(np.random.randn(3, 3), columns=['a', 'b', 'c'])
 print(df['a'].cov(df['b']))
 print(df.cov())
 
+#%%
 df = pd.DataFrame(np.random.randn(15, 3),
 index = pd.date_range('1/1/2019', periods=15),
 columns = ['A', 'B', 'C'])
 
+#%%
 print(df.rolling(window=3).mean())
 print('#',50*"-")
 
@@ -204,28 +222,45 @@ columns = ['A', 'B', 'C'])
 
 R = df.rolling(window=3,min_periods=1)
 print(R)
+
+#%%
 print(R.aggregate(np.sum))
+
+#%%
 print(R['A'].aggregate(np.sum))
+
+#%%
 print(R[['A','B']].aggregate([np.mean,np.std]))
+
+#%%
 print(R.aggregate({'A' : np.sum,'B' : np.count_nonzero}))
+
+#%%
 print('#',50*"-")
 
 #%%
 # Pipe and Apply
-def adder(ele1,ele2):
-   return ele1+ele2
+def adder(df, c):
+   return df + c
+
+def adder2(arg2, df, arg1):
+    return df * arg2 + arg1
 
 df = pd.DataFrame(np.random.rand(2,2),columns=['col1','col2'])
 print(df)
+
+#%%
 # Piping
 # https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.pipe.html 
 df.pipe(adder, 2)
 
+#%%
 # Apply
 # https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.apply.html 
 print(df.apply(np.mean))
 print(df.apply(np.mean, axis=1))
 
+#%%
 df['col1'].map(lambda x:x*2)
 print(df.apply(np.mean, axis=1))
 print('#',50*"-")
@@ -233,18 +268,25 @@ print('#',50*"-")
 #%%
 # Reindex, Rename
 df = pd.DataFrame({
-   'A': np.linspace(0,stop=20-1,num=20),
+   'A': np.linspace(0, stop=20-1, num=20),
    'B': np.random.rand(20),
    'D': np.random.normal(100, 10, size=(20)).tolist()
                   })
 print(df)
+
+#%%
 df_reindexed = df.reindex(index=[0, 1, 2], columns=['A', 'B', 'C'])
 print(df_reindexed)
 
+#%%
 df1 = pd.DataFrame(np.random.randn(4,3),columns=['col1','col2','col3'])
 print(df1)
-print(df1.rename(columns={'col1' : 'c1', 'col2' : 'c2'},
+
+#%%
+print(df1.rename(columns={'c1' : 'c1', 'c2' : 'c2'},
        index = {0 : 'apple', 1 : 'banana', 2 : 'orange'}))
+
+#%%
 print('#',50*"-")
 
 #%%
@@ -258,11 +300,15 @@ print(df)
 for col in df:
    print(col)
 
+#%%
 for key,value in df.iteritems():
    print(key,value)
 
+#%%
 for row_index,row in df.iterrows():
    print (row_index,row)
+
+#%%
 print('#',50*"-")
 
 #%%
@@ -270,18 +316,40 @@ print('#',50*"-")
 df1=pd.DataFrame(np.random.rand(3, 2), index=[1,6,4],columns=['col2', 'col1'])
 print(df1)
 
+#%%
 df2 = df1.sort_index()
+
+#%%
 df3 = df1.sort_index(ascending=False)
+
+#%%
 df4 = df1.sort_index(axis=1)
+df4
+#%%
 df5 = df1.sort_values(by='col1')
+
+#%%
 df5 = df1.sort_values(by=['col1', 'col2'])
+
+#%%
 df6 = df1.sort_values(by='col1', kind='mergesort')
 
+#%%
 print(df2)
+
+#%%
 print(df3)
+
+#%%
 print(df4)
+
+#%%
 print(df5)
+
+#%%
 print(df6)
+
+#%%
 print('#',50*"-")
 
 #%%
@@ -329,13 +397,19 @@ print('#',50*"-")
 # Missing values
 df13 = pd.DataFrame(np.random.randn(5, 3), index=['a', 'c', 'e', 'f', 'h'],columns=['one', 'two', 'three'])
 print(df13)
+
+#%%
 df14 = df13.reindex(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'])
 print(df14)
+
+#%%
 print(df14['one'].isnull())
 print(df14['one'].notnull())
 print(df14['one'].sum())
 print(df14['one'].sum())
 print(df.fillna(0))
+
+#%%
 df15 = df13.reindex(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'])
 print(df15.dropna())
 df16 = df13.reindex(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'])
