@@ -1,6 +1,6 @@
 #%%[markdown]
 # Quiz 2
-# Name:  
+# Name:  Rajkumar Conjeevaram Mohan
 # 
 # You may use web search, notes, etc. 
 # Do not use help from another human. If you use help from another student, 
@@ -30,6 +30,7 @@
 # fare : Passenger fare
 # embarked : Port of Embarkment	C: Cherbourg, Q: Queenstown, S: Southampton
 
+#%%
 import pandas as pd
 import dm6103 as dm
 df = dm.api_dsLand('Titanic','id')
@@ -40,17 +41,24 @@ print(df.head())
 #%%
 # 1. what is the total fare paid by all the passengers on board? 
 #
-
+print(f'The total fare paid by all the passengers was {df.loc[:, "fare"].sum()}')
 
 #%%
 # 2. create a boolean array/dataframe for female passengers. Use broadcasting and filtering 
 # to obtain a subset of females, and find average age of the female passengers on board 
 # 
+females_b = df.loc[:, 'sex'] == 'female'
+females = df.loc[females_b]
+f_avg_age = females['age'].mean()
+print(f"The average of female passengers on board was {round(f_avg_age)}")
+# df.loc[df.loc[:, 'sex']=='female', 'age'].mean() Since you had asked to create separate subsets I did it that way
 
 #%%
 # 3. create a boolean array/dataframe for survived passengers. Use broadcasting and filtering 
 # to obtain a subset of survivers, and find the average age of the survived passengers on board? 
 # 
+survived_b = df.loc[:, 'survival'] == 1
+survived = 
 
 #%%
 # 4. What is the average age of the female passengers who survived? 
