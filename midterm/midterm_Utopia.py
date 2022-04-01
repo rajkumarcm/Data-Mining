@@ -101,7 +101,17 @@ print(f'Since the p value for t.test on income by industry between two worlds is
 
 #%%
 # Industry and gender since there is some correlation between them
+w1_by_gen = world1.groupby(['industry', 'gender']).size()
+w2_by_gen = world2.groupby(['industry', 'gender']).size()
 
+fig, axes = plt.subplots(1, 2, figsize=(10,4))
+w1_by_gen.unstack(level=1).plot.bar(ax=axes[0])
+w2_by_gen.unstack(level=1).plot.bar(ax=axes[1])
+axes[0].set_ylabel('Count')
+axes[1].set_ylabel('Count')
+axes[0].set_title('World1')
+axes[1].set_title('World2')
+plt.show()
 
 
 #%%
@@ -141,8 +151,19 @@ print(f'The test confirms that there is not statistical difference in income bet
 # Winner: Certainly world2
 w2_points += 1
 #%%
+# Education and gender since there is some correlation between them
+w1_by_gen = world1.groupby(['education', 'gender']).size()
+w2_by_gen = world2.groupby(['education', 'gender']).size()
 
-w1_inc_pivot = world1.pivot(index='industry', columns='gender', values='income00')
+fig, axes = plt.subplots(1, 2, figsize=(10,4))
+w1_by_gen.unstack(level=1).plot.bar(ax=axes[0])
+w2_by_gen.unstack(level=1).plot.bar(ax=axes[1])
+axes[0].set_ylabel('Count')
+axes[1].set_ylabel('Count')
+axes[0].set_title('World1')
+axes[1].set_title('World2')
+plt.show()
+
 # w1_inc_pivot.plot.bar()
 # plt.show()
 
