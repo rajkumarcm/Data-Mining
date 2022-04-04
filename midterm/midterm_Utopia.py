@@ -168,13 +168,65 @@ plt.show()
 # plt.show()
 
 #%%
+w1_by_eth = world1.groupby(['ethnic', 'gender']).agg(np.mean)
+w2_by_eth = world2.groupby(['ethnic', 'gender']).agg(np.mean)
 
 
+fig, axes = plt.subplots(1, 2, figsize=(10,4))
+w1_by_eth.unstack(level=1).loc[:, 'income00'].plot.bar(ax=axes[0])
+w2_by_eth.unstack(level=1).loc[:, 'income00'].plot.bar(ax=axes[1])
+axes[0].set_ylabel('Income')
+axes[1].set_ylabel('Income')
+axes[0].set_title('World1')
+axes[1].set_title('World2')
+plt.show()
+# Winner: World2
+w2_points += 1
+
+#%%
+
+w1_married = world1[world1['marital']==1]
+w1_married_by_ed = w1_married.loc[:, ['education', 'marital']]\
+                           .groupby('education')\
+                           .agg(np.sum)
+
+w2_married = world2[world2['marital']==1]
+w2_married_by_ed = w2_married.loc[:, ['education', 'marital']]\
+                             .groupby('education')\
+                             .agg(np.sum)
+
+fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+w1_married_by_ed.plot.bar(ax=axes[0])
+w2_married_by_ed.plot.bar(ax=axes[1])
+axes[0].set_ylabel('Count of married')
+axes[1].set_ylabel('Count of married')
+axes[0].set_title('World1')
+axes[1].set_title('World2')
+plt.show()
+
+#%%
 
 
+#%%
 
+w1_married_by_age = world1.loc[:, ['age00', 'marital', 'gender']]
+w1_married_by_age = w1_married_by_age.pivot_table(index='marital', columns='gender', values='age00', aggfunc=np.mean)
+w2_married_by_age = world2.loc[:, ['age00', 'marital', 'gender']]
+w2_married_by_age = w2_married_by_age.pivot_table(index='marital', columns='gender', values='age00', aggfunc=np.mean)
 
+fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+w1_married_by_age.plot.bar(ax=axes[0])
+w2_married_by_age.plot.bar(ax=axes[1])
+axes[0].set_ylabel('Average age')
+axes[1].set_ylabel('Average age')
+axes[0].set_title('World1')
+axes[1].set_title('World2')
+plt.show()
 
+ttest_ind(w1_married_by_age[0], w1_married_by_age[1], equal_var=False)
+
+#%%
+# Construct a contingency table for gender, and marital status. Run a chi squared test
 
 
 
