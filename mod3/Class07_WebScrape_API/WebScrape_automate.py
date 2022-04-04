@@ -68,7 +68,7 @@ from bs4 import BeautifulSoup
 
 #%%
 # Basic setup, test chrome launch
-driver = webdriver.Chrome(r'C:\\Users\\Rajkumar\\Downloads\\dev\\chromedriver.exe')
+driver = webdriver.Chrome(r'/Users/elo/Downloads/dev/chromedriver')
 # also need to install and locate the webdriver.Chrome location
 # for my install, I need to set 
 # driver = webdriver.Chrome(r'/Users/elo/Downloads/dev/chromedriver')  # mac OS
@@ -88,8 +88,7 @@ print("\nReady to continue.")
 # We will need this function soon. 
 # Woring backwards...
 def getGovWeatherTemperature(soup):
-  # selectTemp = soup.select('div#current_conditions-summary p.myforecast-current-lrg') # return a list
-  selectTemp = soup.select('div#current_conditions-summary > p.myforecast-current-lrg')  # return a list
+  selectTemp = soup.select('div#current_conditions-summary p.myforecast-current-lrg') # return a list
   temp = (selectTemp[0].text) if (len(selectTemp)==1) else "error"
   # print(f"temperature found to be {temp}") 
   return temp
@@ -98,7 +97,7 @@ def getGovWeatherTemperature(soup):
 
 
 # driver start
-driver = webdriver.Chrome(r'C:\\Users\\Rajkumar\\Downloads\\dev\\chromedriver.exe')
+driver = webdriver.Chrome(r'/Users/elo/Downloads/dev/chromedriver')
 driver.get("https://www.weather.gov")
 
 # set up list for looping later

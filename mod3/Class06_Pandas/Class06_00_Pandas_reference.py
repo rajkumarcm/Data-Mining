@@ -110,7 +110,6 @@ print(df9.loc['b'])
 print(df9.iloc[1])
 print(df9[2:3])
 
-#%%
 df10 = pd.DataFrame([{'one':5, 'two':6,'four':7}],index = ['e'])
 df11 = df9.append(df10)
 print(df11)
@@ -162,28 +161,17 @@ d = {'Name':pd.Series(['a','b','c','d']),
 
 df = pd.DataFrame(d)
 print(df)
-#%%
 print(df.sum())
-
-#%%
 print(df.sum(1))
-#%%
+
 print(df.mean())
-#%%
 print(df.std())
-#%%
 print(df.count())
-#%%
 print(df.min())
-#%%
 print(df.median())
-#%%
 print(df.mode())
-#%%
 print(df.cumsum())
-#%%
 print (df.describe(include='all'))
-#%%
 print('#',50*"-")
 
 #%%
@@ -191,26 +179,20 @@ print('#',50*"-")
 s = pd.Series([1,2,3,4,5,4])
 print(s.pct_change())
 
-#%%
 df = pd.DataFrame(np.random.rand(3, 2))
 print(df.pct_change())
-
-#%%
 s1 = pd.Series(np.random.rand(10))
 s2 = pd.Series(np.random.rand(10))
 print(s1.cov(s2))
 
-#%%
 df = pd.DataFrame(np.random.randn(3, 3), columns=['a', 'b', 'c'])
 print(df['a'].cov(df['b']))
 print(df.cov())
 
-#%%
 df = pd.DataFrame(np.random.randn(15, 3),
 index = pd.date_range('1/1/2019', periods=15),
 columns = ['A', 'B', 'C'])
 
-#%%
 print(df.rolling(window=3).mean())
 print('#',50*"-")
 
@@ -222,45 +204,28 @@ columns = ['A', 'B', 'C'])
 
 R = df.rolling(window=3,min_periods=1)
 print(R)
-
-#%%
 print(R.aggregate(np.sum))
-
-#%%
 print(R['A'].aggregate(np.sum))
-
-#%%
 print(R[['A','B']].aggregate([np.mean,np.std]))
-
-#%%
 print(R.aggregate({'A' : np.sum,'B' : np.count_nonzero}))
-
-#%%
 print('#',50*"-")
 
 #%%
 # Pipe and Apply
-def adder(df, c):
-   return df + c
-
-def adder2(arg2, df, arg1):
-    return df * arg2 + arg1
+def adder(ele1,ele2):
+   return ele1+ele2
 
 df = pd.DataFrame(np.random.rand(2,2),columns=['col1','col2'])
 print(df)
-
-#%%
 # Piping
 # https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.pipe.html 
 df.pipe(adder, 2)
 
-#%%
 # Apply
 # https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.apply.html 
 print(df.apply(np.mean))
 print(df.apply(np.mean, axis=1))
 
-#%%
 df['col1'].map(lambda x:x*2)
 print(df.apply(np.mean, axis=1))
 print('#',50*"-")
@@ -268,25 +233,18 @@ print('#',50*"-")
 #%%
 # Reindex, Rename
 df = pd.DataFrame({
-   'A': np.linspace(0, stop=20-1, num=20),
+   'A': np.linspace(0,stop=20-1,num=20),
    'B': np.random.rand(20),
    'D': np.random.normal(100, 10, size=(20)).tolist()
                   })
 print(df)
-
-#%%
 df_reindexed = df.reindex(index=[0, 1, 2], columns=['A', 'B', 'C'])
 print(df_reindexed)
 
-#%%
 df1 = pd.DataFrame(np.random.randn(4,3),columns=['col1','col2','col3'])
 print(df1)
-
-#%%
-print(df1.rename(columns={'c1' : 'c1', 'c2' : 'c2'},
+print(df1.rename(columns={'col1' : 'c1', 'col2' : 'c2'},
        index = {0 : 'apple', 1 : 'banana', 2 : 'orange'}))
-
-#%%
 print('#',50*"-")
 
 #%%
@@ -300,15 +258,11 @@ print(df)
 for col in df:
    print(col)
 
-#%%
 for key,value in df.iteritems():
    print(key,value)
 
-#%%
 for row_index,row in df.iterrows():
    print (row_index,row)
-
-#%%
 print('#',50*"-")
 
 #%%
@@ -316,40 +270,18 @@ print('#',50*"-")
 df1=pd.DataFrame(np.random.rand(3, 2), index=[1,6,4],columns=['col2', 'col1'])
 print(df1)
 
-#%%
 df2 = df1.sort_index()
-
-#%%
 df3 = df1.sort_index(ascending=False)
-
-#%%
 df4 = df1.sort_index(axis=1)
-df4
-#%%
 df5 = df1.sort_values(by='col1')
-
-#%%
 df5 = df1.sort_values(by=['col1', 'col2'])
-
-#%%
 df6 = df1.sort_values(by='col1', kind='mergesort')
 
-#%%
 print(df2)
-
-#%%
 print(df3)
-
-#%%
 print(df4)
-
-#%%
 print(df5)
-
-#%%
 print(df6)
-
-#%%
 print('#',50*"-")
 
 #%%
@@ -397,19 +329,13 @@ print('#',50*"-")
 # Missing values
 df13 = pd.DataFrame(np.random.randn(5, 3), index=['a', 'c', 'e', 'f', 'h'],columns=['one', 'two', 'three'])
 print(df13)
-
-#%%
 df14 = df13.reindex(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'])
 print(df14)
-
-#%%
 print(df14['one'].isnull())
 print(df14['one'].notnull())
 print(df14['one'].sum())
 print(df14['one'].sum())
 print(df.fillna(0))
-
-#%%
 df15 = df13.reindex(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'])
 print(df15.dropna())
 df16 = df13.reindex(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'])
@@ -425,40 +351,21 @@ ipl_data = {'Team': ['Riders', 'Riders', 'Devils', 'Devils', 'Kings',
          'Year': [2014,2015,2014,2015,2014,2015,2016,2017,2016,2014,2015,2017],
          'Points':[876,789,863,673,741,812,756,788,694,701,804,690]}
 df = pd.DataFrame(ipl_data)
-df
-
-#%%
-df.groupby('Team').groups
-
-#%%
-df.groupby(['Team','Year']).groups
-
-#%%
+print(df)
+print(df.groupby('Team').groups)
+print(df.groupby(['Team','Year']).groups)
 grouped = df.groupby('Year')
-for name, group in grouped:
+for name,group in grouped:
     print(name)
     print(group)
-
-#%%
 print(grouped.get_group(2014))
 print(grouped['Points'].agg(np.mean))
-
-#%%
 grouped = df.groupby('Team')
-grouped['Year'].agg(np.size)
-
-#%%
-for name, group in grouped:
-    print(name)
-    print(group['Points'].rank(ascending=False))
-
-#%%
+print(grouped.agg(np.size))
 score = lambda x: (x - x.mean()) / x.std()*10
 print(grouped.transform(score))
-
-#%%
 print(df.groupby('Team').filter(lambda x: len(x) >= 3))
-# print('#',50*"-")
+print('#',50*"-")
 
 #%%
 # Merging and Joining
@@ -466,27 +373,17 @@ dfl = pd.DataFrame({
          'in':[1,2,3,4],
          'Name': ['Amir', 'Brian', 'James', 'Mike'],
          'id':['id1','id2','id3','id4']})
-dfl
-
-#%%
 dfr = pd.DataFrame(
          {'in':[1,2,3,4],
          'Name': ['Li', 'Brian', 'Bran', 'Xu'],
          'id':['id2','id4','id3','id1']})
-dfr
-
-#%%
+print(dfl)
+print(dfr)
 print(pd.merge(dfl,dfr,on='in'))
-
-#%%
 print(pd.merge(dfl,dfr,on=['in','id']))
-
-#%%
 print(pd.merge(dfl,dfr,on='id', how='left'))
-
-#%%
 print(pd.merge(dfl,dfr,on='id', how='right'))
-
+print('#',50*"-")
 
 #%%
 # Concatenate, append
@@ -494,76 +391,40 @@ dfl = pd.DataFrame({
          'in':[1,2,3,4],
          'Name': ['Amir', 'Brian', 'James', 'Mike'],
          'id':['id1','id2','id3','id4']})
-dfl
-
-#%%
 dfr = pd.DataFrame(
          {'in':[1,2,3,4],
          'Name': ['Li', 'Brian', 'Bran', 'Xu'],
          'id':['id2','id4','id3','id1']})
-dfr
-
-#%%
 print(pd.concat([dfl,dfr],keys=['x','y']))
-
-#%%
 print(pd.concat([dfl,dfr],keys=['x','y'],ignore_index=True))
-
-#%%
 print(pd.concat([dfl,dfr],keys=['x','y'],axis=1))
-
-#%%
 print(dfl.append(dfr))
-
-#%%
 print(dfl.append([dfl,dfl,dfr]))
 
-#%%
 print(pd.Timestamp(1283447255,unit='s'))
-
-#%%
 print(pd.date_range("12:00", "15:30", freq="30min").time)
-
-#%%
-pd.date_range("29/03/2022", periods=10)
-
+print('#',50*"-")
 
 #%%
 # Visualization 
 # We will re-visit these when we formally introduce the matplotlib library
 df = pd.DataFrame(np.random.rand(9,3),index=pd.date_range('1/1/2019', periods=9), columns=list('ABC'))
 print(df)
-
-#%%
 df.plot()
 plt.show()
-
-#%%
 df = pd.DataFrame(np.random.rand(9,3),columns=['a','b','c'])
 df.plot.bar()
 plt.show()
-
-#%%
 df.plot.barh(stacked=True)
 plt.show()
-
-#%%
 df.plot.hist(bins=20)
 plt.show()
-
-#%%
 df.plot.box()
 plt.show()
-
-#%%
 df.plot.area()
 plt.show()
-
-#%%
 df.plot.scatter(x='a', y='b')
 plt.show()
-
-#%%
 df.plot.pie(subplots=True)
 plt.show()
 print('#',50*"-")

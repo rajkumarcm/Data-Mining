@@ -81,8 +81,6 @@ print(dfgap_pv2['lifeExp'])   # OR  print(dfgap_pv2.lifeExp)
 #%%
 # print(dfgap_pv2['lifeExp'].mean()) # OR
 print(dfgap_pv2.lifeExp.mean()) # default axis = 0 (column-wise).  This gives you the mean for each column or year
-
-#%%
 # print(dfgap_pv2['lifeExp'].mean(axis=1)) # OR
 print(dfgap_pv2.lifeExp.mean(axis=1)) # axis = 1 (row-wise).  This gives you the mean for each row or country
 

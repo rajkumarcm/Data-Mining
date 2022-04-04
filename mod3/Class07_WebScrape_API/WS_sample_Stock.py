@@ -9,14 +9,13 @@ import requests
 from bs4 import BeautifulSoup
 # from time import sleep
 import re # regular expressions
-from lxml import etree
+
 # # Web scraping
 #
 
 #%%
 def getUrl(sym):
-  #url = 'https://money.cnn.com/quote/quote.html?symb=' + sym.upper()
-  url = 'https://www.wunderground.com/weather/us/dc/20052'
+  url = 'https://money.cnn.com/quote/quote.html?symb=' + sym.upper()
   return url 
 
 def getSoup(url,timer=0,parser=''):
@@ -25,8 +24,7 @@ def getSoup(url,timer=0,parser=''):
   p = parser if ( parser=='lxml' or parser=='html.parser') else 'html5lib'
   if (timer > 0):
       print('slept',timer,'s')
-
-      r = requests.get(url, timeout = timer, headers=headers )
+      r = requests.get(url, timeout = timer )
   else:
       r = requests.get(url)
   s = BeautifulSoup(r.content, p) # or 'lxml' or 'html.parser'
@@ -59,7 +57,7 @@ filepath = 'stockportfolio.csv'
 def getDayQuotes(filepath):
   # import datetime
   tday = datetime.datetime.today()
-  # if tday.weekday() > 4 : return None   # 6-Sunday,5-Saturday, do nothing
+  if tday.weekday() > 4 : return None   # 6-Sunday,5-Saturday, do nothing
   tdaystr = tday.strftime('%Y-%m-%d')
 
   # open file, import df

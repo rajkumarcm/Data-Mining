@@ -38,7 +38,7 @@ print("\nReady to continue.")
 sns.set(style="white", palette="muted", color_codes=True)
 rs = np.random.RandomState(10)
 
-f, axes = plt.subplots(2, 2, figsize=(7, 7), sharex=True)
+fig, axes = plt.subplots(2, 2, figsize=(7, 7), sharex=True)
 sns.despine(left=True)
 
 d = rs.normal(size=100)
@@ -77,9 +77,9 @@ print(flights.info())
 print(flights.shape)
 
 #%%
-f, ax = plt.subplots(figsize=(9, 6))
+fig, axes = plt.subplots(figsize=(9, 6))
 
-sns.heatmap(flights, annot=True, fmt="d", linewidths=.5, ax=ax)
+sns.heatmap(flights, annot=True, fmt="d", linewidths=.5, ax=axes)
 
 plt.show()
 
@@ -205,8 +205,8 @@ x1, x2 = rs.multivariate_normal(mean, cov, 500).T
 x1 = pd.Series(x1, name="$X_1$")
 x2 = pd.Series(x2, name="$X_2$")
 
-g = sns.jointplot(x1, x2, kind="kde", height=7, space=0)
-# g = sns.jointplot(x1, x2, kind="hex", height=7, space=0)
+# g = sns.jointplot(x1, x2, kind="kde", height=7, space=0)
+g = sns.jointplot(x1, x2, kind="hex", height=7, space=0)
 plt.show()
 
 print("\nReady to continue.")
