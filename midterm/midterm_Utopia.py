@@ -76,6 +76,8 @@ plt.show()
 
 
 #%%
+# Is there a difference between the two worlds such as the trend between industry and income is different.
+
 w1_by_ind = world1.groupby('industry')\
                   .agg(np.mean)
 w1_by_ind_mean = w1_by_ind.loc[:, 'income00']
@@ -185,7 +187,7 @@ w2_points += 1
 
 #%%
 
-w1_married = world1[world1['marital']==1]
+w1_married = world1[world1['marital']>0]
 w1_married_by_ed = w1_married.loc[:, ['education', 'marital']]\
                            .groupby('education')\
                            .agg(np.sum)
@@ -228,6 +230,42 @@ ttest_ind(w1_married_by_age[0], w1_married_by_age[1], equal_var=False)
 #%%
 # Construct a contingency table for gender, and marital status. Run a chi squared test
 
+w1_cont1 = pd.crosstab(world1.gender, world1.marital)
+w2_cont1 = pd.crosstab(world2.gender, world2.marital)
+
+fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+sns.heatmap(w1_cont1, annot=True, cmap="YlGnBu", ax=axes[0])
+sns.heatmap(w2_cont1, annot=True, cmap="YlGnBu", ax=axes[1])
+plt.show()
+
+from scipy.stats import chi2_contingency
+
+c1, p1, dof1, expected1 = chi2_contingency(observed=w1_cont1)
+c2, p2, dof2, expected2 = chi2_contingency(observed=w2_cont1)
+
+print(f'Whether you are a man or a woman, this should not affect your privilege in getting married. While it can '
+      f'be seen from chi squared test for World1 p.value = {p1} the gender has no effect on marital status, in the '
+      f'case of World2, the chi squared test produced a p.value = {p2} that shows being a man or woman has an '
+      f'influence on the chances of getting married and I think of this as a bias.')
+
+# Winner: World1
+w1_points += 1
+
+#%%
+# Does coming from a particular ethinc has any impact on getting married
+
+
+w1_by_eth = w1_married.loc[:, ['ethnic', 'gender', 'marital']].groupby(['ethnic', 'gender']).size()
+w2_by_eth = w2_married.loc[:, ['ethnic', 'gender', 'marital']].groupby(['ethnic', 'gender']).size()
+
+fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+w1_by_eth.unstack(level=-1).plot.bar(ax=axes[0])
+w2_by_eth.unstack(level=-1).plot.bar(ax=axes[1])
+axes[0].set_ylabel('Count of married')
+axes[1].set_ylabel('Count of married')
+axes[0].set_title('World1')
+axes[1].set_title('World2')
+plt.show()
 
 
 
