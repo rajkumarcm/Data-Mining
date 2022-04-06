@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import dm6103 as dm
 from scipy.stats import ttest_ind
+from scipy.stats import chi2_contingency
 
 world1 = dm.api_dsLand('World1', 'id')
 world2 = dm.api_dsLand('World2', 'id')
@@ -105,15 +106,47 @@ print(f'Since the p value for t.test on income by industry between two worlds is
 # Industry and gender since there is some correlation between them
 w1_by_gen = world1.groupby(['industry', 'gender']).size()
 w2_by_gen = world2.groupby(['industry', 'gender']).size()
+tmp_df = pd.DataFrame({'World1':w1_by_gen, 'World2':w2_by_gen})
 
-fig, axes = plt.subplots(1, 2, figsize=(10,4))
-w1_by_gen.unstack(level=1).plot.bar(ax=axes[0])
-w2_by_gen.unstack(level=1).plot.bar(ax=axes[1])
-axes[0].set_ylabel('Count')
-axes[1].set_ylabel('Count')
-axes[0].set_title('World1')
-axes[1].set_title('World2')
+w1_change = w1_by_gen.unstack(level=-1).pct_change(periods=1, axis='columns')
+w2_change = w2_by_gen.unstack(level=-1).pct_change(periods=1, axis='columns')
+change_df = pd.DataFrame({'W1 Change': w1_change.iloc[:, 1], 'W2 Change': w2_change.iloc[:, 1]})
+
+fig, axes = plt.subplots(2, 2, figsize=(10, 7))
+w1_by_gen.unstack(level=1).plot.bar(ax=axes[0, 0])
+w2_by_gen.unstack(level=1).plot.bar(ax=axes[0, 1])
+change_df.plot.bar(ax=axes[1, 0])
+indices = list(range(change_df.shape[0]))
+indices = list(filter(lambda x: x!=4, indices))
+change_df2 = change_df.iloc[indices]
+change_df2.plot.bar(ax=axes[1, 1])
+axes[0, 0].set_ylabel('Number of Employees')
+axes[0, 1].set_ylabel('Number of Employees')
+axes[1, 0].set_ylabel('Percent')
+axes[1, 1].set_ylabel('Percent')
+axes[0, 0].set_title('World1')
+axes[0, 1].set_title('World2')
+axes[1, 0].set_title('Difference in employment count between genders')
+axes[1, 1].set_title('Left plot with 4th industry ignored')
 plt.show()
+
+# Is there statistical significance in the frequencies of employment count between two worlds
+
+_, p, _, _ = chi2_contingency(tmp_df)
+print(f'There is definitely difference in number of people employed across different industries between'
+      f'the two worlds as also the p value is {p}')
+
+# Is there statistical significance in the frequencies of employment count between male and female in
+# different industries in World1
+_, p1, _, _ = chi2_contingency(w1_by_gen.unstack(level=-1))
+_, p2, _, _ = chi2_contingency(w2_by_gen.unstack(level=-1))
+
+print(f"I really want to declare immediately that World2 is the winner here, but the chi-squared test produced a "
+      f"p value of {p2} for World2. I think it would make sense to run a t.test on percentage change in genders "
+      f"across different industries between the two worlds. Perhaps the final result will allow us conclude "
+      f"who the winner is.")
+
+
 
 
 #%%
@@ -186,28 +219,32 @@ plt.show()
 w2_points += 1
 
 #%%
+# There is definitely an issue here. Analyze. Remove this line once fixed
 
 w1_married = world1[world1['marital']>0]
 w1_married_by_ed = w1_married.loc[:, ['education', 'marital']]\
                            .groupby('education')\
                            .agg(np.sum)
 
-w2_married = world2[world2['marital']==1]
+w2_married = world2[world2['marital']>0]
 w2_married_by_ed = w2_married.loc[:, ['education', 'marital']]\
                              .groupby('education')\
                              .agg(np.sum)
 
-fig, axes = plt.subplots(1, 2, figsize=(10, 4))
-w1_married_by_ed.plot.bar(ax=axes[0])
-w2_married_by_ed.plot.bar(ax=axes[1])
-axes[0].set_ylabel('Count of married')
-axes[1].set_ylabel('Count of married')
-axes[0].set_title('World1')
-axes[1].set_title('World2')
+w1_w2_married_by_ed = w1_married_by_ed\
+                        .join(w2_married_by_ed, on='education', how='inner',
+                              lsuffix=' World1', rsuffix=' World2')
+
+# fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+# w1_married_by_ed.plot.bar(ax=axes[0])
+# w2_married_by_ed.plot.bar(ax=axes[1])
+# axes[0].set_ylabel('Count of married')
+# axes[1].set_ylabel('Count of married')
+# axes[0].set_title('World1')
+# axes[1].set_title('World2')
+plt.figure()
+w1_w2_married_by_ed.plot.bar()
 plt.show()
-
-#%%
-
 
 #%%
 
@@ -238,8 +275,6 @@ sns.heatmap(w1_cont1, annot=True, cmap="YlGnBu", ax=axes[0])
 sns.heatmap(w2_cont1, annot=True, cmap="YlGnBu", ax=axes[1])
 plt.show()
 
-from scipy.stats import chi2_contingency
-
 c1, p1, dof1, expected1 = chi2_contingency(observed=w1_cont1)
 c2, p2, dof2, expected2 = chi2_contingency(observed=w2_cont1)
 
@@ -252,8 +287,23 @@ print(f'Whether you are a man or a woman, this should not affect your privilege 
 w1_points += 1
 
 #%%
-# Does coming from a particular ethinc has any impact on getting married
 
+w1_married_by_gen = w1_married.loc[:, ['gender', 'marital']].groupby(['gender', 'marital']).agg('size')
+w2_married_by_gen = w2_married.loc[:, ['gender', 'marital']].groupby(['gender', 'marital']).agg('size')
+
+fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+w1_married_by_gen.unstack(level=-1).plot.bar(ax=axes[0])
+w2_married_by_gen.unstack(level=-1).plot.bar(ax=axes[1])
+plt.show()
+tmp_w1_married_by_gen = pd.DataFrame(w1_married_by_gen, columns=['Count'])
+tmp_w2_married_by_gen = pd.DataFrame(w2_married_by_gen, columns=['Count'])
+_, p, _, _ = chi2_contingency(tmp_w1_married_by_gen.join(tmp_w2_married_by_gen,
+                                                         on=['gender', 'marital'], how='inner',
+                                                         lsuffix=' World1', rsuffix=' World2'))
+print(p)
+
+#%%
+# Does coming from a particular ethnic has any impact on getting married - part 1
 
 w1_by_eth = w1_married.loc[:, ['ethnic', 'gender', 'marital']].groupby(['ethnic', 'gender']).size()
 w2_by_eth = w2_married.loc[:, ['ethnic', 'gender', 'marital']].groupby(['ethnic', 'gender']).size()
@@ -267,8 +317,12 @@ axes[0].set_title('World1')
 axes[1].set_title('World2')
 plt.show()
 
-
-
+# Winner: World1
+w1_points += 1
+#%%
+plt.figure()
+plt.plot(world1.age00, world1.income00, '.b')
+plt.show()
 
 
 
