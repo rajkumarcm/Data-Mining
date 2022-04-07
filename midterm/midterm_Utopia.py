@@ -324,21 +324,36 @@ print(f'Whether you are a man or a woman, this should not affect your privilege 
 w1_points += 1
 
 #%%
-# Probably a duplicate analysis...
-w1_married_by_gen = w1_married.loc[:, ['gender', 'marital']].groupby(['gender', 'marital']).agg('size')
-w2_married_by_gen = w2_married.loc[:, ['gender', 'marital']].groupby(['gender', 'marital']).agg('size')
+# Probably a duplicate analysis... may be not...
+tmp_married_w1 = world1.loc[:, ['gender', 'marital']]
+tmp_married_w2 = world2.loc[:, ['gender', 'marital']]
 
-fig, axes = plt.subplots(1, 2, sharey=True, figsize=(10, 4))
+w1_married_by_gen = pd.crosstab(tmp_married_w1.gender, tmp_married_w1.marital)
+w2_married_by_gen = pd.crosstab(tmp_married_w2.gender, tmp_married_w2.marital)
 
-w1_married_by_gen.unstack(level=-1).plot.bar(ax=axes[0])
-w2_married_by_gen.unstack(level=-1).plot.bar(ax=axes[1])
+
+tmp_w1_married_by_gen = w1_married_by_gen.stack(level=0)
+tmp_w2_married_by_gen = w2_married_by_gen.stack(level=0)
+w1_w2_married_by_gen = pd.DataFrame({'World1': tmp_w1_married_by_gen,
+                                     'World2': tmp_w2_married_by_gen})
+
+w1_w2_married_by_gen2 = w1_w2_married_by_gen.unstack(level=-1).swaplevel(i=0, j=1, axis=1).sort_index(axis=1, level=0)
+fig, axes = plt.subplots(2, 2, figsize=(11, 7), sharex=True, sharey=True)
+idx = 0
+for i in range(2):
+    for j in range(2):
+        idx = i*2 + j
+        w1_w2_married_by_gen2.loc[:, idx].plot.bar(ax=axes[i, j])
+        axes[i, j].set_title(f'Marital status {idx}')
 plt.show()
-tmp_w1_married_by_gen = pd.DataFrame(w1_married_by_gen, columns=['Count'])
-tmp_w2_married_by_gen = pd.DataFrame(w2_married_by_gen, columns=['Count'])
-_, p, _, _ = chi2_contingency(tmp_w1_married_by_gen.join(tmp_w2_married_by_gen,
-                                                         on=['gender', 'marital'], how='inner',
-                                                         lsuffix=' World1', rsuffix=' World2'))
-print(p)
+
+input('Press any key once you are done looking at the plot...')
+plt.figure()
+w1_w2_married_by_gen2.sum(axis=0).unstack(level=-1).plot.bar()
+
+# It would not make sense to run a chi-squared here as difference in row is balanced in the subsequent rows.
+# I mean, if world1 has upper hand in one section, the world2 has upper hand in the second section. This counteracts
+# the points and makes the winner neutral.
 
 #%%
 # Does coming from a particular ethnic has any impact on getting married - part 1
@@ -373,8 +388,7 @@ print(f'Gender bias was already found in one of our previous analysis and this i
 # Winner: World1
 w1_points += 1
 #%%
-print(f'w1_points: {w1_points}')
-print(f'w2_points: {w2_points}')
+
 
 
 
