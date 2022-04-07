@@ -9,6 +9,8 @@ import seaborn as sns
 import dm6103 as dm
 from scipy.stats import ttest_ind
 from scipy.stats import chi2_contingency
+from statsmodels.formula.api import ols
+from statsmodels.stats import anova
 
 world1 = dm.api_dsLand('World1', 'id')
 world2 = dm.api_dsLand('World2', 'id')
@@ -146,8 +148,11 @@ print(f"I really want to declare immediately that World2 is the winner here, but
       f"across different industries between the two worlds. Perhaps the final result will allow us conclude "
       f"who the winner is.")
 
-
-
+_, p3 = ttest_ind(w1_change.iloc[:, 1], w2_change.iloc[:, 1], equal_var=False)
+print(f"Since the p value {p3} also for the ttest for the percentage change between genders in two subgroups shows "
+      f"no statistical significance, I conclude the winner is neither of them on the basis of statistical "
+      f"results.")
+# Winner: Neutral (Although unexpected)
 
 #%%
 
@@ -160,9 +165,10 @@ w2_by_gen = world2.groupby('gender')\
 w2_by_gen_mean = w2_by_gen_mean = w2_by_gen.loc[:, 'income00']
 
 plt.figure()
+plt.title('Income of male and female in both worlds')
 bar1 = w1_by_gen_mean.plot.bar(color='black', label='World1', alpha=0.5)
 bar2 = w2_by_gen_mean.plot.bar(color='silver', label='World2', alpha=0.5)
-
+plt.ylabel('Income')
 plt.legend()
 # bar1.bar_label(padding=3)
 # bar2.bar_label(padding=3)
@@ -171,18 +177,22 @@ plt.show()
 #%%
 
 ttest_inc = ttest_ind(world1['income00'], world2['income00'], equal_var=False, alternative='two-sided')
-print(f'Since the p value for t.test on the income between the two worlds is {ttest_inc.pvalue}, '
-      f'there is not statistical difference between the average income between the two worlds.')
+print(f'I decided to run t.test on the entire income data between the two worlds to understand if there is'
+      f' statistical significance between them and it produced a p value = {round(ttest_inc.pvalue, 4)} that tells '
+      f' any difference that exists is not due to more than just chance. Although the average may be similar'
+      f' there could still be differences under different levels. Hence, I wish to drill down even further.')
 
 ttest_inc_by_gen2 = ttest_ind(world1.loc[world1['gender']==0, 'income00'], world1.loc[world1['gender']==1, 'income00'],
                              equal_var=False, alternative='two-sided')
-print(f'The test confirms that there is a racial bias in world1, in terms of income as the pvalue is '
-      f'{ttest_inc_by_gen2.pvalue}')
 
 ttest_inc_by_gen3 = ttest_ind(world2.loc[world2['gender']==0, 'income00'], world2.loc[world2['gender']==1, 'income00'],
                              equal_var=False, alternative='two-sided')
-print(f'The test confirms that there is not statistical difference in income between male and female in the '
-      f'second world {ttest_inc_by_gen3.pvalue}')
+
+print(f'The test confirms that there is a gender bias in world1, in terms of income as the pvalue is '
+      f'{round(ttest_inc_by_gen2.pvalue, 4)}, whereas in case of World2, there is not much difference between the '
+      f'income made by male and female as was confirmed by the t.test that produced a p value of '
+      f'{round(ttest_inc_by_gen3.pvalue, 4)}')
+
 # Winner: Certainly world2
 w2_points += 1
 #%%
@@ -199,22 +209,34 @@ axes[0].set_title('World1')
 axes[1].set_title('World2')
 plt.show()
 
-# w1_inc_pivot.plot.bar()
-# plt.show()
+# Winner: Neutral
 
 #%%
-w1_by_eth = world1.groupby(['ethnic', 'gender']).agg(np.mean)
-w2_by_eth = world2.groupby(['ethnic', 'gender']).agg(np.mean)
+# Analyzing Ethnic bias in income
+w1_by_eth = world1.loc[:, ['ethnic', 'gender', 'income00']]\
+                  .groupby(['ethnic', 'gender']).agg(np.mean)
+w2_by_eth = world2.loc[:, ['ethnic', 'gender', 'income00']]\
+                  .groupby(['ethnic', 'gender']).agg(np.mean)
 
 
 fig, axes = plt.subplots(1, 2, figsize=(10,4))
-w1_by_eth.unstack(level=1).loc[:, 'income00'].plot.bar(ax=axes[0])
-w2_by_eth.unstack(level=1).loc[:, 'income00'].plot.bar(ax=axes[1])
+w1_by_eth.iloc[:, 0].unstack(level=1).plot.bar(ax=axes[0])
+w2_by_eth.iloc[:, 0].unstack(level=1).plot.bar(ax=axes[1])
 axes[0].set_ylabel('Income')
 axes[1].set_ylabel('Income')
 axes[0].set_title('World1')
 axes[1].set_title('World2')
 plt.show()
+
+# Include statistical results (ANOVA perhaps as there are three ethnic groups)
+ethnic_inc_w1_model = ols('income00~C(ethnic)', data=world1).fit()
+print(f'ANOVA test on whether ethnicity has any effect on the income level in World1')
+print(anova.anova_lm(ethnic_inc_w1_model))
+print(f'ANOVA test on whether ethnicity has any effect on the income level in World2')
+ethnic_inc_w2_model = ols('income00~C(ethnic)', data=world2).fit()
+print(anova.anova_lm(ethnic_inc_w2_model))
+print(f'As it is clear from plots and also from the ANOVA test result, the World1 has ethnic bias in the income '
+      f'people make. Hence the winner for this test would be World2')
 # Winner: World2
 w2_points += 1
 
@@ -224,12 +246,12 @@ w2_points += 1
 w1_married = world1[world1['marital']>0]
 w1_married_by_ed = w1_married.loc[:, ['education', 'marital']]\
                            .groupby('education')\
-                           .agg(np.sum)
+                           .agg('count')
 
 w2_married = world2[world2['marital']>0]
 w2_married_by_ed = w2_married.loc[:, ['education', 'marital']]\
                              .groupby('education')\
-                             .agg(np.sum)
+                             .agg('count')
 
 w1_w2_married_by_ed = w1_married_by_ed\
                         .join(w2_married_by_ed, on='education', how='inner',
@@ -243,10 +265,17 @@ w1_w2_married_by_ed = w1_married_by_ed\
 # axes[0].set_title('World1')
 # axes[1].set_title('World2')
 plt.figure()
+plt.title('Married count based on education level')
 w1_w2_married_by_ed.plot.bar()
+plt.ylabel('Married count')
 plt.show()
+_, mar_by_ed_p, _, _ = chi2_contingency(w1_w2_married_by_ed)
+print(f'As was conveyed by the visual plot, the statistical test also confirmed that there is not much '
+      f'statistical significance between the two worlds in terms of how education enables one to get married. '
+      f'The p.value would be {round(mar_by_ed_p, 4)}')
 
 #%%
+# Is there difference in age between the subgroups of marital - this is perhaps a useless test
 
 w1_married_by_age = world1.loc[:, ['age00', 'marital', 'gender']]
 w1_married_by_age = w1_married_by_age.pivot_table(index='marital', columns='gender', values='age00', aggfunc=np.mean)
@@ -258,25 +287,33 @@ w1_married_by_age.plot.bar(ax=axes[0])
 w2_married_by_age.plot.bar(ax=axes[1])
 axes[0].set_ylabel('Average age')
 axes[1].set_ylabel('Average age')
-axes[0].set_title('World1')
-axes[1].set_title('World2')
+axes[0].set_title('World1 avg age of marital status')
+axes[1].set_title('World2 avg age of marital status')
 plt.show()
 
-ttest_ind(w1_married_by_age[0], w1_married_by_age[1], equal_var=False)
-
+print('Analyzing if age for different subgroups of marital status has any statistical significance in World1')
+age_marital_w1_model = ols('age00~C(marital)', data=world1).fit()
+print(anova.anova_lm(age_marital_w1_model))
+print('Analyzing if age for different subgroups of marital status has any statistical significance in World2')
+age_marital_w2_model = ols('age00~C(marital)', data=world2).fit()
+print(anova.anova_lm(age_marital_w2_model))
+print('The whole intention of this test was to ensure in particular I do not want to see there is difference '
+      'between different subgroups as this means one subgroup suffers delayed married and compare this to world2 so'
+      'as to find out which world is better from this perspective. People could have different perception on this, '
+      'but this is at least my understanding.')
 #%%
 # Construct a contingency table for gender, and marital status. Run a chi squared test
 
-w1_cont1 = pd.crosstab(world1.gender, world1.marital)
-w2_cont1 = pd.crosstab(world2.gender, world2.marital)
+gender_marital_cont_w1 = pd.crosstab(world1.gender, world1.marital)
+gender_marital_cont_w2 = pd.crosstab(world2.gender, world2.marital)
 
 fig, axes = plt.subplots(1, 2, figsize=(10, 4))
-sns.heatmap(w1_cont1, annot=True, cmap="YlGnBu", ax=axes[0])
-sns.heatmap(w2_cont1, annot=True, cmap="YlGnBu", ax=axes[1])
+sns.heatmap(gender_marital_cont_w1, annot=True, cmap="YlGnBu", ax=axes[0])
+sns.heatmap(gender_marital_cont_w2, annot=True, cmap="YlGnBu", ax=axes[1])
 plt.show()
 
-c1, p1, dof1, expected1 = chi2_contingency(observed=w1_cont1)
-c2, p2, dof2, expected2 = chi2_contingency(observed=w2_cont1)
+_, p1, _, _ = chi2_contingency(observed=gender_marital_cont_w1)
+_, p2, _, _ = chi2_contingency(observed=gender_marital_cont_w2)
 
 print(f'Whether you are a man or a woman, this should not affect your privilege in getting married. While it can '
       f'be seen from chi squared test for World1 p.value = {p1} the gender has no effect on marital status, in the '
@@ -287,11 +324,12 @@ print(f'Whether you are a man or a woman, this should not affect your privilege 
 w1_points += 1
 
 #%%
-
+# Probably a duplicate analysis...
 w1_married_by_gen = w1_married.loc[:, ['gender', 'marital']].groupby(['gender', 'marital']).agg('size')
 w2_married_by_gen = w2_married.loc[:, ['gender', 'marital']].groupby(['gender', 'marital']).agg('size')
 
-fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+fig, axes = plt.subplots(1, 2, sharey=True, figsize=(10, 4))
+
 w1_married_by_gen.unstack(level=-1).plot.bar(ax=axes[0])
 w2_married_by_gen.unstack(level=-1).plot.bar(ax=axes[1])
 plt.show()
@@ -308,21 +346,35 @@ print(p)
 w1_by_eth = w1_married.loc[:, ['ethnic', 'gender', 'marital']].groupby(['ethnic', 'gender']).size()
 w2_by_eth = w2_married.loc[:, ['ethnic', 'gender', 'marital']].groupby(['ethnic', 'gender']).size()
 
+w1_by_eth = w1_by_eth.unstack(level=-1)
+w2_by_eth = w2_by_eth.unstack(level=-1)
+
 fig, axes = plt.subplots(1, 2, figsize=(10, 4))
-w1_by_eth.unstack(level=-1).plot.bar(ax=axes[0])
-w2_by_eth.unstack(level=-1).plot.bar(ax=axes[1])
+w1_by_eth.plot.bar(ax=axes[0])
+w2_by_eth.plot.bar(ax=axes[1])
 axes[0].set_ylabel('Count of married')
 axes[1].set_ylabel('Count of married')
 axes[0].set_title('World1')
 axes[1].set_title('World2')
 plt.show()
 
+# Include hypothesis test to show that the differences are indeed present.
+# I don't think it is possible to use ANOVA in this context as we are trying to compare the frequencies and
+# not the quantitative variable itself. Hence, a chi-squared appears more appropriate.
+# However there is a problem even with that approach. What we have is more than 2 variables in picture...
+_, eth_p1, _, _ = chi2_contingency(w1_by_eth)
+_, eth_p2, _, _ = chi2_contingency(w2_by_eth)
+
+print(f'Gender bias was already found in one of our previous analysis and this is not surprising to see this again. '
+      f'As for the intention of the analysis, I wanted to see if there is an ethnic bias to getting married and '
+      f'as confirmed by visual plots, there is no ethnic bias to getting married in both worlds. The p.value for '
+      f'world1 would be {round(eth_p1, 4)}, while for world2 the p.value would be {round(eth_p2, 4)}')
+
 # Winner: World1
 w1_points += 1
 #%%
-plt.figure()
-plt.plot(world1.age00, world1.income00, '.b')
-plt.show()
+print(f'w1_points: {w1_points}')
+print(f'w2_points: {w2_points}')
 
 
 
