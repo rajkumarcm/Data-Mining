@@ -50,7 +50,22 @@ print("\nReady to continue.")
 # There are no must-dos (except plots), should-dos, cannot-dos. The more convenicing your analysis, 
 # the higher the grade. It's an art.
 #
-
+#%%
+print('I wish to decide which world is an epitome of Utopia by assessing data on various criteria that should '
+      'aim at answering some of the SMART questions as follows:')
+print('1. Is there a difference between the two worlds such as the trend between industry and income is different.')
+print('2. Is there a gender bias in people who work at different industries in either of the worlds')
+print('3. Is there a gender bias in income people make in either of the worlds')
+print('4. Is there a gender bias in education in either of the worlds')
+print('5. Does the income people make is biased by ethnicity in any of the worlds')
+print('6. Does any of the world shows sign of delayed marriage - perhaps a useless smart question')
+print('7. Is there a gender bias in getting married in any of the worlds')
+print('8. Is there an ethnic bias in getting married in any of the worlds')
+print('9. Is there an ethnic bias in working at different industries in either of the worlds')
+print('10. Is there an ethnic bias in the income people make - this is ignored as considered redundant.')
+print('11. Is there an ethnic bias in education in either of the worlds')
+print('12. Does income has any effect on the marital status in any of the worlds')
+print('Final conclusion will be points based.')
 #%%
 # Lets decide the utopia based on points
 w1_points = 0
@@ -105,18 +120,17 @@ print(f'Since the p value for t.test on income by industry between two worlds is
 # Winner: NEUTRAL
 
 #%%
-# Industry and gender since there is some correlation between them
-w1_by_gen = world1.groupby(['industry', 'gender']).size()
-w2_by_gen = world2.groupby(['industry', 'gender']).size()
-tmp_df = pd.DataFrame({'World1':w1_by_gen, 'World2':w2_by_gen})
+# Gender bias in people working in different industries in both worlds
+w1_by_gen = world1.groupby(['industry', 'gender']).size().unstack(level=-1)
+w2_by_gen = world2.groupby(['industry', 'gender']).size().unstack(level=-1)
 
-w1_change = w1_by_gen.unstack(level=-1).pct_change(periods=1, axis='columns')
-w2_change = w2_by_gen.unstack(level=-1).pct_change(periods=1, axis='columns')
+w1_change = w1_by_gen.pct_change(periods=1, axis='columns')
+w2_change = w2_by_gen.pct_change(periods=1, axis='columns')
 change_df = pd.DataFrame({'W1 Change': w1_change.iloc[:, 1], 'W2 Change': w2_change.iloc[:, 1]})
 
 fig, axes = plt.subplots(2, 2, figsize=(10, 7))
-w1_by_gen.unstack(level=1).plot.bar(ax=axes[0, 0])
-w2_by_gen.unstack(level=1).plot.bar(ax=axes[0, 1])
+w1_by_gen.plot.bar(ax=axes[0, 0])
+w2_by_gen.plot.bar(ax=axes[0, 1])
 change_df.plot.bar(ax=axes[1, 0])
 indices = list(range(change_df.shape[0]))
 indices = list(filter(lambda x: x!=4, indices))
@@ -132,25 +146,20 @@ axes[1, 0].set_title('Difference in employment count between genders')
 axes[1, 1].set_title('Left plot with 4th industry ignored')
 plt.show()
 
-# Is there statistical significance in the frequencies of employment count between two worlds
-
-_, p, _, _ = chi2_contingency(tmp_df)
-print(f'There is definitely difference in number of people employed across different industries between'
-      f'the two worlds as also the p value is {p}')
-
 # Is there statistical significance in the frequencies of employment count between male and female in
 # different industries in World1
-_, p1, _, _ = chi2_contingency(w1_by_gen.unstack(level=-1))
-_, p2, _, _ = chi2_contingency(w2_by_gen.unstack(level=-1))
+_, p1, _, _ = chi2_contingency(w1_by_gen)
+_, p2, _, _ = chi2_contingency(w2_by_gen)
 
 print(f"I really want to declare immediately that World2 is the winner here, but the chi-squared test produced a "
-      f"p value of {p2} for World2. I think it would make sense to run a t.test on percentage change in genders "
-      f"across different industries between the two worlds. Perhaps the final result will allow us conclude "
-      f"who the winner is.")
+      f"p value of {round(p2, 4)} for World2. I think it would make sense to run a t.test on percentage change in genders "
+      f"across different industries for both the worlds. If the following test would produce a p.value that shows"
+      f"statistical significance in percentage change between genders subgroups in two worlds then we could conclude"
+      f"that World2 is the winner here.")
 
 _, p3 = ttest_ind(w1_change.iloc[:, 1], w2_change.iloc[:, 1], equal_var=False)
-print(f"Since the p value {p3} also for the ttest for the percentage change between genders in two subgroups shows "
-      f"no statistical significance, I conclude the winner is neither of them on the basis of statistical "
+print(f"Even t.test for the percentage change between genders in two subgroups produced a p.value={round(p3, 4)} "
+      f"that represents no statistical significance, I conclude the winner is neither of them on the basis of statistical "
       f"results.")
 # Winner: Neutral (Although unexpected)
 
@@ -418,20 +427,58 @@ w2_points += 1
 
 #%%
 # Ethnic and education
+ethnic_ed_w1 = pd.crosstab(world1.education, world1.ethnic)
+ethnic_ed_w2 = pd.crosstab(world2.education, world2.ethnic)
 
+fig, axes = plt.subplots(1, 2, figsize=(10, 4), sharey=True)
+ethnic_ed_w1.plot.bar(ax=axes[0])
+ethnic_ed_w2.plot.bar(ax=axes[1])
+axes[0].set_title('Analyzing the bias of ethnicity in World1')
+axes[1].set_title('Analyzing the bias of ethnicity in World2')
+axes[0].set_ylabel('Number of students at x grade')
+plt.show()
 
+print(f'I am convinced by this result not to run a statistical test as any subtle difference could'
+      f' be attributed to mere noise.')
 
+#%%
+# Does income influence marriage in either of the worlds
+income_marital_w1 = world1.loc[:, ['income00', 'marital']]\
+                          .groupby('marital')\
+                          .agg(np.mean)
 
+income_marital_w2 = world2.loc[:, ['income00', 'marital']]\
+                          .groupby('marital')\
+                          .agg(np.mean)
 
+w1_w2_income_marital = income_marital_w1.join(income_marital_w2, on='marital', how='inner',
+                                              lsuffix=' World1', rsuffix=' World2')
 
+plt.figure()
+w1_w2_income_marital.plot.bar()
+plt.title('Does income has any effect on marital status')
+plt.ylabel('Mean income')
+plt.show()
 
+print('Verifying by ANOVA on whether income has any effect on marital status in World1')
+income_marital_model_w1 = ols('income00~C(marital)', data=world1).fit()
+print(anova.anova_lm(income_marital_model_w1))
 
+print('Verifying by ANOVA on whether income has any effect on marital status in World2')
+income_marital_model_w2 = ols('income00~C(marital)', data=world2).fit()
+print(anova.anova_lm(income_marital_model_w2))
 
+print('Not surprised by the results, I can not see any difference in income between the different subgroups'
+      'of marital status.')
 
-
-
-
-
+#%%
+print('End of analyses--------------------------------------')
+print('Points............')
+print(f'World1: {w1_points}')
+print(f'World2: {w2_points}')
+print('I can make weighted average of the points to draw conclusion, but I believe the coefficients would reflect'
+      'my perception that may be subjective. Hence, based on the points and samples provided, I wish to conclude '
+      'that World2 can be an ideal place (utopia).')
 
 
 
