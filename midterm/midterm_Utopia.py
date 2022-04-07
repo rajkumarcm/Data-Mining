@@ -51,8 +51,7 @@ print("\nReady to continue.")
 # the higher the grade. It's an art.
 #
 #%%
-print('I wish to decide which world is an epitome of Utopia by assessing data on various criteria that should '
-      'aim at answering some of the SMART questions as follows:')
+print('I wish to decide which world is an epitome of Utopia by answering the SMART questions as follows:')
 print('1. Is there a difference between the two worlds such as the trend between industry and income is different.')
 print('2. Is there a gender bias in people who work at different industries in either of the worlds')
 print('3. Is there a gender bias in income people make in either of the worlds')
@@ -91,7 +90,7 @@ sns.heatmap(w1_corr, vmin=-1, vmax=1,
 sns.heatmap(w1_corr, vmin=-1, vmax=1,
                       center=0, cbar=True, square=True, ax=axes[1])
 plt.show()
-
+# I was unable to control the height of the colorbar. I tried constraining it to an axis, but it would not listen.
 
 #%%
 # Is there a difference between the two worlds such as the trend between industry and income is different.
@@ -115,7 +114,7 @@ plt.show()
 
 #%%
 ttest_inc_by_ind = ttest_ind(w1_by_ind_mean, w2_by_ind_mean, equal_var=False, alternative='two-sided')
-print(f'Since the p value for t.test on income by industry between two worlds is {ttest_inc_by_ind.pvalue}, '
+print(f'Since the p value for t.test on income by industry between two worlds is {round(ttest_inc_by_ind.pvalue, 4)}, '
       f'both the worlds share similar income by industry trend.')
 # Winner: NEUTRAL
 
@@ -153,14 +152,14 @@ _, p2, _, _ = chi2_contingency(w2_by_gen)
 
 print(f"I really want to declare immediately that World2 is the winner here, but the chi-squared test produced a "
       f"p value of {round(p2, 4)} for World2. I think it would make sense to run a t.test on percentage change in genders "
-      f"across different industries for both the worlds. If the following test would produce a p.value that shows"
-      f"statistical significance in percentage change between genders subgroups in two worlds then we could conclude"
+      f"across different industries for both the worlds. If the following test would produce a p.value that shows "
+      f"statistical significance in percentage change between genders subgroups in two worlds then we could conclude "
       f"that World2 is the winner here.")
 
 _, p3 = ttest_ind(w1_change.iloc[:, 1], w2_change.iloc[:, 1], equal_var=False)
 print(f"Even t.test for the percentage change between genders in two subgroups produced a p.value={round(p3, 4)} "
-      f"that represents no statistical significance, I conclude the winner is neither of them on the basis of statistical "
-      f"results.")
+      f"that represents no statistical significance. Hence, I conclude the winner is neither of them on the basis "
+      f"of statistical results.")
 # Winner: Neutral (Although unexpected)
 
 #%%
@@ -201,8 +200,8 @@ print(f'The test confirms that there is a gender bias in world1, in terms of inc
       f'{round(ttest_inc_by_gen2.pvalue, 4)}, whereas in case of World2, there is not much difference between the '
       f'income made by male and female as was confirmed by the t.test that produced a p value of '
       f'{round(ttest_inc_by_gen3.pvalue, 4)}')
-
-# Winner: Certainly world2
+print('The winner for this test would be World2')
+# Winner: Certainly World2
 w2_points += 1
 #%%
 # Education and gender since there is some correlation between them
@@ -281,7 +280,7 @@ plt.show()
 _, mar_by_ed_p, _, _ = chi2_contingency(w1_w2_married_by_ed)
 print(f'As was conveyed by the visual plot, the statistical test also confirmed that there is not much '
       f'statistical significance between the two worlds in terms of how education enables one to get married. '
-      f'The p.value would be {round(mar_by_ed_p, 4)}')
+      f'The p.value of chi-squared test would be {round(mar_by_ed_p, 4)}')
 
 #%%
 # Is there difference in age between the subgroups of marital - this is perhaps a useless test
@@ -308,7 +307,7 @@ age_marital_w2_model = ols('age00~C(marital)', data=world2).fit()
 print(anova.anova_lm(age_marital_w2_model))
 print('The whole intention of this test was to ensure in particular I do not want to see there is difference '
       'between different subgroups as this means one subgroup suffers delayed married and compare this to world2 so'
-      'as to find out which world is better from this perspective. People could have different perception on this, '
+      ' as to find out which world is better from this perspective. People could have different perception on this, '
       'but this is at least my understanding.')
 #%%
 # Construct a contingency table for gender, and marital status. Run a chi squared test
@@ -354,15 +353,18 @@ for i in range(2):
         idx = i*2 + j
         w1_w2_married_by_gen2.loc[:, idx].plot.bar(ax=axes[i, j])
         axes[i, j].set_title(f'Marital status {idx}')
+        axes[i, j].set_ylabel('Married/Unmarried count')
 plt.show()
 
 input('Press any key once you are done looking at the plot...')
 plt.figure()
+plt.title('Number of married/unmarried in both worlds')
 w1_w2_married_by_gen2.sum(axis=0).unstack(level=-1).plot.bar()
+plt.ylabel('Married/Unmarried count')
 plt.show()
-# It would not make sense to run a chi-squared here as difference in row is balanced in the subsequent rows.
-# I mean, if world1 has upper hand in one section, the world2 has upper hand in the second section. This counteracts
-# the points and makes the winner neutral.
+print('It would not make sense to run a chi-squared here as difference in row is balanced in the subsequent rows. '
+ 'I mean, if world1 has upper hand in one section, the world2 has upper hand in the second section. This counteracts '
+ 'the points and makes the winner neutral.')
 
 #%%
 # Does coming from a particular ethnic has any impact on getting married - part 1
@@ -373,13 +375,18 @@ w2_by_eth = w2_married.loc[:, ['ethnic', 'gender', 'marital']].groupby(['ethnic'
 w1_by_eth = w1_by_eth.unstack(level=-1)
 w2_by_eth = w2_by_eth.unstack(level=-1)
 
-fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+w1_w2_married_by_eth = pd.DataFrame({'World1': w1_by_eth.sum(axis=1), 'World2': w2_by_eth.sum(axis=1)})
+
+fig, axes = plt.subplots(1, 3, figsize=(14, 4))
 w1_by_eth.plot.bar(ax=axes[0])
 w2_by_eth.plot.bar(ax=axes[1])
+w1_w2_married_by_eth.plot.bar(ax=axes[2])
 axes[0].set_ylabel('Count of married')
 axes[1].set_ylabel('Count of married')
+axes[2].set_ylabel('Count of married')
 axes[0].set_title('World1')
 axes[1].set_title('World2')
+axes[2].set_title('Number of married/unmarried in each ethnicity in both worlds')
 plt.show()
 
 # Include hypothesis test to show that the differences are indeed present.
@@ -414,8 +421,8 @@ _, ethnic_ind_p1, _, _ = chi2_contingency(ethnic_ind_w1)
 _, ethnic_ind_p2, _, _ = chi2_contingency(ethnic_ind_w2)
 
 print(f'The visual plot shows that there is ethnicity bias in world1 as also confirmed by chi-squared test '
-      f'with a p.value={ethnic_ind_p1}, whereas in case of the second world, this is neutral and likewise the '
-      f'p.value would be {ethnic_ind_p2}. Based on both the results, I conclude the winner for this test would be'
+      f'with a p.value={round(ethnic_ind_p1, 4)}, whereas in case of the second world, this is neutral and likewise the '
+      f'p.value would be {round(ethnic_ind_p2, 4)}. Based on both the results, I conclude the winner for this test would be'
       f'World2')
 
 # Winner: World2
@@ -433,8 +440,8 @@ ethnic_ed_w2 = pd.crosstab(world2.education, world2.ethnic)
 fig, axes = plt.subplots(1, 2, figsize=(10, 4), sharey=True)
 ethnic_ed_w1.plot.bar(ax=axes[0])
 ethnic_ed_w2.plot.bar(ax=axes[1])
-axes[0].set_title('Analyzing the bias of ethnicity in World1')
-axes[1].set_title('Analyzing the bias of ethnicity in World2')
+axes[0].set_title('Analyzing the bias of ethnicity on education in World1')
+axes[1].set_title('Analyzing the bias of ethnicity on education in World2')
 axes[0].set_ylabel('Number of students at x grade')
 plt.show()
 
