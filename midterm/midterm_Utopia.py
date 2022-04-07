@@ -350,7 +350,7 @@ plt.show()
 input('Press any key once you are done looking at the plot...')
 plt.figure()
 w1_w2_married_by_gen2.sum(axis=0).unstack(level=-1).plot.bar()
-
+plt.show()
 # It would not make sense to run a chi-squared here as difference in row is balanced in the subsequent rows.
 # I mean, if world1 has upper hand in one section, the world2 has upper hand in the second section. This counteracts
 # the points and makes the winner neutral.
@@ -388,11 +388,36 @@ print(f'Gender bias was already found in one of our previous analysis and this i
 # Winner: World1
 w1_points += 1
 #%%
+# Industry and ethnic
+ethnic_ind_w1 = pd.crosstab(world1.industry, world1.ethnic)
+ethnic_ind_w2 = pd.crosstab(world2.industry, world2.ethnic)
 
+fig, axes = plt.subplots(1, 2, figsize=(10, 4), sharey=True)
+ethnic_ind_w1.plot.bar(ax=axes[0])
+ethnic_ind_w2.plot.bar(ax=axes[1])
+axes[0].set_title('How ethnicity affect employment in World1')
+axes[1].set_title('How ethnicity affect employment in World2')
+axes[0].set_ylabel('Number of employeed')
+axes[1].set_ylabel('Number of employeed')
+plt.show()
 
+_, ethnic_ind_p1, _, _ = chi2_contingency(ethnic_ind_w1)
+_, ethnic_ind_p2, _, _ = chi2_contingency(ethnic_ind_w2)
 
+print(f'The visual plot shows that there is ethnicity bias in world1 as also confirmed by chi-squared test '
+      f'with a p.value={ethnic_ind_p1}, whereas in case of the second world, this is neutral and likewise the '
+      f'p.value would be {ethnic_ind_p2}. Based on both the results, I conclude the winner for this test would be'
+      f'World2')
 
+# Winner: World2
+w2_points += 1
+# I wish not to analyse if there is ethnic bias in getting income that I find it being redundant in some sense.
+# As you have seen, ethnicity has effect on industry and different industries have different income levels.
+# When you say ethnic -> industry and industry -> income then it makes sense to think ethnic -> income
+# This assumption is also backed by the correlation plot as it shows there is some connection between ethnic and income.
 
+#%%
+# Ethnic and education
 
 
 
