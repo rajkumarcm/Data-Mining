@@ -64,6 +64,7 @@ print('9. Is there an ethnic bias in working at different industries in either o
 print('10. Is there an ethnic bias in the income people make - this is ignored as considered redundant.')
 print('11. Is there an ethnic bias in education in either of the worlds')
 print('12. Does income has any effect on the marital status in any of the worlds')
+print('Due to time constraints, I had not included list of the analyses I have included, but present below.')
 print('Final conclusion will be points based.')
 #%%
 # Lets decide the utopia based on points
@@ -161,7 +162,10 @@ print(f"Even t.test for the percentage change between genders in two subgroups p
       f"that represents no statistical significance. Hence, I conclude the winner is neither of them on the basis "
       f"of statistical results.")
 # Winner: Neutral (Although unexpected)
-
+print('But on one basis that the world1 has lesser female construction workers, I wish to give one point to World1.'
+      'Different people perspective is subjective and I believe that a world that has more female construction worker'
+      ' is not a good sign. ')
+w1_points += 1
 #%%
 
 w1_by_gen = world1.groupby('gender')\
@@ -249,14 +253,14 @@ print(f'As it is clear from plots and also from the ANOVA test result, the World
 w2_points += 1
 
 #%%
-# There is definitely an issue here. Analyze. Remove this line once fixed
+# Does better education enable higher chances of getting married.
 
-w1_married = world1[world1['marital']>0]
+w1_married = world1[world1['marital']==1]
 w1_married_by_ed = w1_married.loc[:, ['education', 'marital']]\
                            .groupby('education')\
                            .agg('count')
 
-w2_married = world2[world2['marital']>0]
+w2_married = world2[world2['marital']==1]
 w2_married_by_ed = w2_married.loc[:, ['education', 'marital']]\
                              .groupby('education')\
                              .agg('count')
@@ -265,13 +269,6 @@ w1_w2_married_by_ed = w1_married_by_ed\
                         .join(w2_married_by_ed, on='education', how='inner',
                               lsuffix=' World1', rsuffix=' World2')
 
-# fig, axes = plt.subplots(1, 2, figsize=(10, 4))
-# w1_married_by_ed.plot.bar(ax=axes[0])
-# w2_married_by_ed.plot.bar(ax=axes[1])
-# axes[0].set_ylabel('Count of married')
-# axes[1].set_ylabel('Count of married')
-# axes[0].set_title('World1')
-# axes[1].set_title('World2')
 plt.figure()
 plt.title('Married count based on education level')
 w1_w2_married_by_ed.plot.bar()
@@ -283,8 +280,102 @@ print(f'As was conveyed by the visual plot, the statistical test also confirmed 
       f'The p.value of chi-squared test would be {round(mar_by_ed_p, 4)}')
 
 #%%
-# Is there difference in age between the subgroups of marital - this is perhaps a useless test
+print('Assessing if one of the worlds has an overall lower divorce number')
+divorce_subset_w1 = world1.loc[world1.marital==2]
+divorce_subset_w2 = world2.loc[world2.marital==2]
+w1_dr = divorce_subset_w1.shape[0]
+w2_dr = divorce_subset_w2.shape[0]
+print(f'Since world2 has number of divorcees {w2_dr} that is less than that of world 1, which is {w1_dr}, I give world2 '
+      f'a point')
+w2_points += 1
 
+#%%
+print('Assessing if one of the worlds has an overall lower widow number')
+widow_subset_w1 = world1.loc[world1.marital==3]
+widow_subset_w2 = world2.loc[world2.marital==3]
+w1_wr = widow_subset_w1.shape[0]
+w2_wr = widow_subset_w2.shape[0]
+print(f'Since world1 has number of widows {w1_wr} that is less than that of world2, which is {w2_wr}, I give world1 '
+      f'a point')
+w1_points += 1
+
+#%%
+# Is there ethnic bias to divorce rate
+print('Assessing if there is ethnic bias to divorce rate')
+divorce_w1 = world1.loc[world1.marital==2]
+divorce_w2 = world2.loc[world2.marital==2]
+divorce_w1 = pd.crosstab(divorce_w1.marital, divorce_w1.ethnic)
+divorce_w2 = pd.crosstab(divorce_w2.marital, divorce_w2.ethnic)
+fig, axes = plt.subplots(1, 2, figsize=(10, 4), sharey=True, sharex=True)
+axes[0].set_title('World1: ethnic bias to divorce rate')
+axes[1].set_title('World2: ethnic bias to divorce rate')
+divorce_w1.plot.bar(ax=axes[0])
+divorce_w2.plot.bar(ax=axes[1])
+axes[0].set_ylabel('Population')
+axes[0].set_xlabel('Divorcees')
+axes[1].set_xlabel('Divorcees')
+plt.show()
+print('As I can see there is ethnic bias in both the worlds so neither of them defines gains a point here.')
+
+#%%
+print('Assessing if there gender bias to divorce rate')
+divorce_g_w1 = world1.loc[world1.marital==2]
+divorce_g_w2 = world2.loc[world2.marital==2]
+divorce_g_w1 = pd.crosstab(divorce_g_w1.marital, divorce_g_w1.gender)
+divorce_g_w2 = pd.crosstab(divorce_g_w2.marital, divorce_g_w2.gender)
+fig, axes = plt.subplots(1, 2, figsize=(10, 4), sharey=True, sharex=True)
+axes[0].set_title('World1: gender bias to divorce rate')
+axes[1].set_title('World2: gender bias to divorce rate')
+divorce_g_w1.plot.bar(ax=axes[0])
+divorce_g_w2.plot.bar(ax=axes[1])
+axes[0].set_ylabel('Population')
+axes[0].set_xlabel('Divorcees')
+axes[1].set_xlabel('Divorcees')
+
+plt.show()
+print('As I can see there is ethnic bias in the second world compared to first world so world1 gets a point here.')
+w1_points += 1
+
+#%%
+# Is there ethnic bias to widow rate
+print('Assessing if there is ethnic bias to widow rate')
+widow_w1 = world1.loc[world1.marital==3]
+widow_w2 = world2.loc[world2.marital==3]
+widow_w1 = pd.crosstab(widow_w1.marital, widow_w1.ethnic)
+widow_w2 = pd.crosstab(widow_w2.marital, widow_w2.ethnic)
+fig, axes = plt.subplots(1, 2, figsize=(10, 4), sharey=True, sharex=True)
+axes[0].set_title('World1: ethnic bias to widow rate')
+axes[1].set_title('World2: ethnic bias to widow rate')
+widow_w1.plot.bar(ax=axes[0])
+widow_w2.plot.bar(ax=axes[1])
+axes[0].set_ylabel('Population')
+axes[0].set_xlabel('Widows')
+axes[1].set_xlabel('Widows')
+plt.show()
+print('As I can see there is ethnic bias in both the worlds so neither of them defines gains a point here.')
+
+#%%
+print('Assessing if there is gender bias to widow rate')
+widow_g_w1 = world1.loc[world1.marital==3]
+widow_g_w2 = world2.loc[world2.marital==3]
+widow_g_w1 = pd.crosstab(widow_g_w1.marital, widow_g_w1.gender)
+widow_g_w2 = pd.crosstab(widow_g_w2.marital, widow_g_w2.gender)
+fig, axes = plt.subplots(1, 2, figsize=(10, 4), sharey=True, sharex=True)
+axes[0].set_title('World1: gender bias to widow rate')
+axes[1].set_title('World2: gender bias to widow rate')
+widow_g_w1.plot.bar(ax=axes[0])
+widow_g_w2.plot.bar(ax=axes[1])
+axes[0].set_ylabel('Population')
+axes[0].set_xlabel('Widows')
+axes[1].set_xlabel('Widows')
+plt.show()
+print('Different people may have different perception on this. From my perspective, although world2 has lower male'
+      ' divorce rate, it appears there is gender bias to this scenario in world1 so I give it a point')
+w1_points += 1
+
+#%%
+# Is there difference in age between the subgroups of marital - this is perhaps a useless test
+print('Assessing if age has an influence on different being single or married or divorced or widow')
 w1_married_by_age = world1.loc[:, ['age00', 'marital', 'gender']]
 w1_married_by_age = w1_married_by_age.pivot_table(index='marital', columns='gender', values='age00', aggfunc=np.mean)
 w2_married_by_age = world2.loc[:, ['age00', 'marital', 'gender']]
@@ -311,9 +402,9 @@ print('The whole intention of this test was to ensure in particular I do not wan
       'but this is at least my understanding.')
 #%%
 # Construct a contingency table for gender, and marital status. Run a chi squared test
-
-gender_marital_cont_w1 = pd.crosstab(world1.gender, world1.marital)
-gender_marital_cont_w2 = pd.crosstab(world2.gender, world2.marital)
+# Gender bias to marital status
+gender_marital_cont_w1 = pd.crosstab(world1.marital, world1.gender)
+gender_marital_cont_w2 = pd.crosstab(world2.marital, world2.gender)
 
 fig, axes = plt.subplots(1, 2, figsize=(10, 4))
 sns.heatmap(gender_marital_cont_w1, annot=True, cmap="YlGnBu", ax=axes[0])
@@ -326,13 +417,14 @@ _, p2, _, _ = chi2_contingency(observed=gender_marital_cont_w2)
 print(f'Whether you are a man or a woman, this should not affect your privilege in getting married. While it can '
       f'be seen from chi squared test for World1 p.value = {p1} the gender has no effect on marital status, in the '
       f'case of World2, the chi squared test produced a p.value = {p2} that shows being a man or woman has an '
-      f'influence on the chances of getting married and I think of this as a bias.')
+      f'influence on being unmarried, married, divorced or widowed and I think of this as a gender bias.')
 
 # Winner: World1
 w1_points += 1
 
 #%%
 # Probably a duplicate analysis... may be not...
+print('Assessing how population in each marital status differs between two worlds - duplicate analysis...')
 tmp_married_w1 = world1.loc[:, ['gender', 'marital']]
 tmp_married_w2 = world2.loc[:, ['gender', 'marital']]
 
@@ -353,40 +445,39 @@ for i in range(2):
         idx = i*2 + j
         w1_w2_married_by_gen2.loc[:, idx].plot.bar(ax=axes[i, j])
         axes[i, j].set_title(f'Marital status {idx}')
-        axes[i, j].set_ylabel('Married/Unmarried count')
-plt.show()
-
-input('Press any key once you are done looking at the plot...')
-plt.figure()
-plt.title('Number of married/unmarried in both worlds')
-w1_w2_married_by_gen2.sum(axis=0).unstack(level=-1).plot.bar()
-plt.ylabel('Married/Unmarried count')
+        axes[i, j].set_ylabel('Population')
 plt.show()
 print('It would not make sense to run a chi-squared here as difference in row is balanced in the subsequent rows. '
  'I mean, if world1 has upper hand in one section, the world2 has upper hand in the second section. This counteracts '
  'the points and makes the winner neutral.')
 
+input('Press any key once you are done looking at the plot...')
+plt.figure()
+plt.title('Number of married/unmarried in both worlds')
+w1_w2_married_by_gen2.sum(axis=0).unstack(level=-1).plot.bar()
+plt.ylabel('Population')
+plt.show()
+print('I wish not to run hypothesis test as I do not see any substantial difference in each marital status')
+
 #%%
 # Does coming from a particular ethnic has any impact on getting married - part 1
 
-w1_by_eth = w1_married.loc[:, ['ethnic', 'gender', 'marital']].groupby(['ethnic', 'gender']).size()
-w2_by_eth = w2_married.loc[:, ['ethnic', 'gender', 'marital']].groupby(['ethnic', 'gender']).size()
+# w1_by_eth = world1.loc[:, ['ethnic', 'gender', 'marital']].groupby(['ethnic', 'gender']).size()
+# w2_by_eth = world2.loc[:, ['ethnic', 'gender', 'marital']].groupby(['ethnic', 'gender']).size()
 
-w1_by_eth = w1_by_eth.unstack(level=-1)
-w2_by_eth = w2_by_eth.unstack(level=-1)
+print('Assessing how ethnicity affects marital status')
+w1_by_eth = pd.crosstab(world1.marital, world1.ethnic)
+w2_by_eth = pd.crosstab(world2.marital, world2.ethnic)
 
-w1_w2_married_by_eth = pd.DataFrame({'World1': w1_by_eth.sum(axis=1), 'World2': w2_by_eth.sum(axis=1)})
-
-fig, axes = plt.subplots(1, 3, figsize=(14, 4))
+fig, axes = plt.subplots(1, 2, figsize=(10, 4))
 w1_by_eth.plot.bar(ax=axes[0])
 w2_by_eth.plot.bar(ax=axes[1])
-w1_w2_married_by_eth.plot.bar(ax=axes[2])
-axes[0].set_ylabel('Count of married')
-axes[1].set_ylabel('Count of married')
-axes[2].set_ylabel('Count of married')
 axes[0].set_title('World1')
 axes[1].set_title('World2')
-axes[2].set_title('Number of married/unmarried in each ethnicity in both worlds')
+axes[0].set_xlabel('marital status')
+axes[1].set_xlabel('marital status')
+axes[0].set_ylabel('Population')
+axes[1].set_ylabel('Population')
 plt.show()
 
 # Include hypothesis test to show that the differences are indeed present.
@@ -396,15 +487,14 @@ plt.show()
 _, eth_p1, _, _ = chi2_contingency(w1_by_eth)
 _, eth_p2, _, _ = chi2_contingency(w2_by_eth)
 
-print(f'Gender bias was already found in one of our previous analysis and this is not surprising to see this again. '
-      f'As for the intention of the analysis, I wanted to see if there is an ethnic bias to getting married and '
-      f'as confirmed by visual plots, there is no ethnic bias to getting married in both worlds. The p.value for '
-      f'world1 would be {round(eth_p1, 4)}, while for world2 the p.value would be {round(eth_p2, 4)}')
+print(f'As can be seen from the plots there is no ethnic bias (statistically) to getting married in both worlds as was also'
+      f'confirmed by the chi-squared test. World1.p.value={round(eth_p1, 4)}, World2.p.value={round(eth_p2, 4)} and any subtle differences'
+      f' can be amounted to mere randomness.')
 
-# Winner: World1
-w1_points += 1
+
 #%%
 # Industry and ethnic
+print('Assessing how ethnicity influences one in working for a particular industry')
 ethnic_ind_w1 = pd.crosstab(world1.industry, world1.ethnic)
 ethnic_ind_w2 = pd.crosstab(world2.industry, world2.ethnic)
 
@@ -423,7 +513,7 @@ _, ethnic_ind_p2, _, _ = chi2_contingency(ethnic_ind_w2)
 print(f'The visual plot shows that there is ethnicity bias in world1 as also confirmed by chi-squared test '
       f'with a p.value={round(ethnic_ind_p1, 4)}, whereas in case of the second world, this is neutral and likewise the '
       f'p.value would be {round(ethnic_ind_p2, 4)}. Based on both the results, I conclude the winner for this test would be'
-      f'World2')
+      f' World2')
 
 # Winner: World2
 w2_points += 1
@@ -484,8 +574,8 @@ print('Points............')
 print(f'World1: {w1_points}')
 print(f'World2: {w2_points}')
 print('I can make weighted average of the points to draw conclusion, but I believe the coefficients would reflect'
-      'my perception that may be subjective. Hence, based on the points and samples provided, I wish to conclude '
-      'that World2 can be an ideal place (utopia).')
+      ' my perception that may be subjective. Hence, based on the points and samples provided, I wish to conclude '
+      'that World1 can be an ideal place (utopia).')
 
 
 
