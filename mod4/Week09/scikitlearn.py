@@ -19,7 +19,7 @@
 # %conda install scikit-learn 
 
 #%%
-import dm6103 as dm
+from Week09 import dm6103 as dm
 
 #%%
 import pandas as pd
@@ -115,8 +115,9 @@ plt.show()
 #%%
 # Or try seaborn
 import seaborn as sns
+fig, axes = plt.subplots(1,1)
 sns.set()
-sns.pairplot(xpizza)
+sns.pairplot(xpizza.reset_index(drop=True),)
 # plt.title("seaborn pairplot")
 plt.show()
 

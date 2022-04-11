@@ -2,7 +2,7 @@
 # First read in the datasets. One Graduate school admission dataset, one Titanic survival dataset
 # need to load api_dsLand
 # from turtle import color
-import dm6103 as dm
+from Week09 import dm6103 as dm
 dfadmit = dm.api_dsLand('gradAdmit')
 # dm.dfChk(dfadmit, True)
 
