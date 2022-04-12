@@ -155,7 +155,7 @@ print("\nReady to continue.")
 
 #%%
 print(gssc.loc[("1","2012"), 'degree':"sex" ] )
-print(gssc.loc[   ("5","2012"), 'degree':"sex" ] )
+print(gssc.loc[("5","2012"), 'degree':"sex" ] )
 # these work
 
 print("\nReady to continue.")
@@ -249,14 +249,14 @@ plt.show()
 # Without an built-in function, you either google 
 # or use this hack (if you know the range of values 
 
-bins = np.linspace(0.5, 20.5, 21)
-plt.hist(educ, bins, alpha=0.5, edgecolor='black', linewidth=1)
+plt.hist(educ, np.arange(0,21, step=1), alpha=0.5, edgecolor='black', linewidth=1)
 plt.xticks(np.arange(0,21, step=2))
 plt.xlabel('Years of Education')
 plt.ylabel('PMF / Frequency')
+plt.xlim([0, 25])
 plt.show() 
 plt.savefig('pmf_educ.png')
-plt.show() 
+# plt.show() 
 
 
 #%% 
@@ -420,7 +420,7 @@ plt.show()
 
 #%%
 # Add jittering to x as well
-fuzzyage = weThePeople.age + np.random.normal(0,1, size=len(weThePeople.age))
+fuzzyage = weThePeople.age + np.random.normal(0, 1, size=len(weThePeople.age))
 plt.plot(fuzzyage, fuzzyincome, 'o', markersize=3, alpha = 0.1)
 plt.ylabel('Respondent income monthly? ($1k)')
 plt.xlabel('Age')

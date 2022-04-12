@@ -26,7 +26,9 @@ print(df.shape)
 # basically the same. But the plots tell a very different story...
 
 #%%
-sns.lmplot(x="x", y="y", col="dataset", hue="dataset", data=df, col_wrap=2, ci=None, palette="muted", scatter_kws={"s": 50, "alpha": 1})
+sns.lmplot(x="x", y="y", col="dataset", 
+           hue="dataset", data=df, col_wrap=2, 
+           ci=None, palette="muted", scatter_kws={"s": 50, "alpha": 1})
 
 plt.show()
 
@@ -207,6 +209,7 @@ x2 = pd.Series(x2, name="$X_2$")
 
 # g = sns.jointplot(x1, x2, kind="kde", height=7, space=0)
 g = sns.jointplot(x1, x2, kind="hex", height=7, space=0)
+plt.colorbar()
 plt.show()
 
 print("\nReady to continue.")
