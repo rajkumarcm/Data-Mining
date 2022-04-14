@@ -5,6 +5,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 import dm6103 as dm
 
 # The dataset is obtained from 
@@ -80,9 +81,11 @@ print(f'\nMarital unique values:\n{dfhappy.marital.unique()}')
 # Replacing No answer in Marital
 dfhappy.marital = dfhappy.marital.str.strip().replace({'No answer': np.nan})
 
-#%%
+#%%[markdown]
+# Cleaning childs
+print(f'\nChilds values before cleaning:\n{dfhappy.childs.unique()}')
 dfhappy.childs = dfhappy.childs.str.strip().replace({'Eight or m': min(8 + np.random.chisquare(2) , 12), 'Dk na': np.nan})
-
+print(f'\nChilds values after cleaning:\n{dfhappy.childs.unique()}')
 # def cleanDfChilds(row):
 #   thechildren = row["childs"]
 #   try: thechildren = int(thechildren) # if it is string "6", now int
@@ -159,26 +162,71 @@ dfhappy.childs = dfhappy.childs.astype(int)
 # income already is in float64
 dfhappy.happy = dfhappy.happy.astype(int)
 
-#%%
-# Describe data
+#%%[markdown]
+# Describe year data
 
 print(f'\nDescribe year:\n{dfhappy.year.describe()}')
 print(f'\nYear Value Counts:\n{dfhappy.year.value_counts()}')
 
+#%%[markdown]
+# Describe hours worked last week
+
 print(f'\nDescribe hrs:\n{dfhappy.hrs1.describe()}')
+
+#%%[markdown]
+# Describe childs
 
 print(f'\nDescribe childs:\n{dfhappy.childs.describe()}')
 print(f'\nChilds Value Counts:\n{dfhappy.childs.value_counts()}')
 
+#%%[markdown]
+# Describe marital
+
 print(f'\nDescribe marital:\n{dfhappy.marital.describe()}')
 print(f'\nMarital Value Counts:\n{dfhappy.marital.value_counts()}')
 
+#%%[markdown]
+# Describe income
+
 print(f'\nDescribe Income:\n{dfhappy.income.describe()}')
+
+#%%[markdown]
+# Describe Happy
 
 print(f'\nDescribe happy:\n{dfhappy.happy.describe()}')
 print(f'\nhappy Value Counts:\n{dfhappy.happy.value_counts()}')
 
+#%%[markdown]
+# Describe ballet
+
 print(f'\nDescribe ballet:\n{dfhappy.ballet.describe()}')
 print(f'\nballet Value Counts:\n{dfhappy.ballet.value_counts()}')
 
+# %%
+
+plt.figure()
+sns.boxplot(y=dfhappy.hrs1, x=dfhappy.marital)
+plt.title('Hour distribution in each subgroup of marital')
+plt.xlabel('Marital status')
+plt.ylabel('Hours worked last week')
+plt.show()
+
+# %%
+plt.figure()
+sns.violinplot(x=dfhappy.happy, y=dfhappy.income)
+plt.title('How income is distributed under each happy subgroup')
+plt.xlabel('Happiness level')
+plt.ylabel('Income')
+plt.show()
+
+# %%
+
+# plt.figure()
+# sns.swarmplot(x="happy", y="childs", data=dfhappy)
+# plt.show()
+
+# %%
+plt.figure()
+sns.lmplot(x="childs", y="happy", data=dfhappy, y_jitter=.02, logistic=False)
+plt.show()
 # %%
