@@ -58,7 +58,16 @@ print(f'Happy Datatypes:\n{dfhappy.dtypes}')
 #%%[markdown]
 # Year appears to be clean
 print(f'\nYear:\n{dfhappy.year.unique()}')
+def cleanYr(row):
+  yr = row["year"]
+  try: yr = int(yr) # if it is string, now int
+  except: pass
 
+  if (isinstance(yr, int) or isinstance(yr, float)) and not isinstance(yr, bool): return (int(yr) if yr >=0 else np.nan)
+  else: return np.nan # for everything else
+
+dfhappy.year = dfhappy.apply(cleanYr, axis=1)
+print(f'\nYear unique values:\n{dfhappy.year.unique()}')
 
 #%%[markdown]
 # Analyzing hrs1 variable
@@ -68,9 +77,24 @@ print(f'\nhrs1 value_counts:\n{dfhappy.hrs1.value_counts()}')
 
 #%%[markdown]
 # Replacing Not applicable, No answer, and Don't know in hrs1
-dfhappy.hrs1 = dfhappy.hrs1.replace({'Not applicable': np.nan, 'No answer': np.nan, "Don't know": np.nan})
+def cleanHrs(row):
+  hr = row["hrs1"]
+  try: hr = int(hr) # if it is string, now int
+  except: pass
 
-# %%
+  try: 
+    if not isinstance(hr, int): hr = float(hr)
+  except: pass
+
+  if (isinstance(hr, int) or isinstance(hr, float)) and not isinstance(hr, bool): return (hr if hr >=0 else np.nan)
+  if isinstance(hr, bool): return np.nan
+  # You reach this place only when it is a string
+  hr = hr.strip()
+  if hr == 'Not applicable' or hr == 'No answer' or hr == "Don't know": return np.nan
+  else: return np.nan # catch everything else
+
+dfhappy.hrs1 = dfhappy.apply(cleanHrs, axis=1)
+# dfhappy.hrs1 = dfhappy.hrs1.replace({'Not applicable': np.nan, 'No answer': np.nan, "Don't know": np.nan})
 print(f'\nhrs1 unique values:\n{dfhappy.hrs1.unique()}')
 
 
@@ -79,34 +103,37 @@ print(f'\nMarital unique values:\n{dfhappy.marital.unique()}')
 
 # %%[markdown]
 # Replacing No answer in Marital
-dfhappy.marital = dfhappy.marital.str.strip().replace({'No answer': np.nan})
+accepted_mstatus = ['Never married', 'Divorced', 'Widowed', 'Married', 'Separated']
+dfhappy.marital = dfhappy.marital.map(lambda x: x if x in accepted_mstatus else np.nan)
+# dfhappy.marital = dfhappy.marital.str.strip().replace({'No answer': np.nan})
 
 #%%[markdown]
 # Cleaning childs
 print(f'\nChilds values before cleaning:\n{dfhappy.childs.unique()}')
-dfhappy.childs = dfhappy.childs.str.strip().replace({'Eight or m': min(8 + np.random.chisquare(2) , 12), 'Dk na': np.nan})
-print(f'\nChilds values after cleaning:\n{dfhappy.childs.unique()}')
-# def cleanDfChilds(row):
-#   thechildren = row["childs"]
-#   try: thechildren = int(thechildren) # if it is string "6", now int
-#   except: pass
-  
-#   try: 
-#     if not isinstance(thechildren,int) : thechildren = float(thechildren)  # no change if already int, or if error when trying
-#   except: pass
-  
-#   if ( isinstance(thechildren,int) or isinstance(thechildren,float) ) and not isinstance(thechildren, bool): return ( thechildren if thechildren>=0 else np.nan )
-#   if isinstance(thechildren, bool): return np.nan
-#   # else: # assume it's string from here onwards
-#   thechildren = thechildren.strip()
-#   if thechildren == "Dk na": return np.nan
-#   if thechildren == "Eight or more": 
-#     thechildren = min(8 + np.random.chisquare(2) , 12)
-#     return thechildren # leave it as decimal
-#   return np.nan # catch all, just in case
-# # end function cleanDfChilds
+# dfhappy.childs = dfhappy.childs.str.strip().replace({'Eight or m': min(8 + np.random.chisquare(2) , 12), 'Dk na': np.nan})
 
-# dfhappy.childs = dfhappy.apply(cleanDfChilds, axis=1)
+def cleanDfChilds(row):
+  thechildren = row["childs"]
+  try: thechildren = int(thechildren) # if it is string "6", now int
+  except: pass
+  
+  try: 
+    if not isinstance(thechildren,int) : thechildren = float(thechildren)  # no change if already int, or if error when trying
+  except: pass
+  
+  if ( isinstance(thechildren,int) or isinstance(thechildren,float) ) and not isinstance(thechildren, bool): return ( thechildren if thechildren>=0 else np.nan )
+  if isinstance(thechildren, bool): return np.nan
+  # else: # assume it's string from here onwards
+  thechildren = thechildren.strip()
+  if thechildren == "Dk na": return np.nan
+  if thechildren == "Eight or more": 
+    thechildren = min(8 + np.random.chisquare(2) , 12)
+    return thechildren # leave it as decimal
+  return np.nan # catch all, just in case
+# end function cleanDfChilds
+
+dfhappy.childs = dfhappy.apply(cleanDfChilds, axis=1)
+print(f'\nChilds values after cleaning:\n{dfhappy.childs.unique()}')
 # dfhappy.childs.dropna(inplace=True)
 # %%[markdown]
 # Analyzing income
@@ -138,15 +165,20 @@ dfhappy.income = dfhappy.apply(cleanDfIncome, colname='income', axis=1)
 # %%[markdown]
 print(f'\nHappy values:\n{dfhappy.happy.unique()}')
 # Replacing Pretty happy, Very happy, and Not too happy to ordinal values while the rest to nan
-dfhappy.happy = dfhappy.happy.replace({'Pretty happy': 3, 'Very happy': 2, 'Not too happy': 1, 
-                                       "Don't know": np.nan, 'Not applicable': np.nan,
-                                       'No answer': np.nan})
+accepted_hvalues = {'Pretty happy':3, 'Very happy':2, 'Not too happy':1}
+dfhappy.happy = dfhappy.happy.map(lambda x: accepted_hvalues.get(x, np.nan))
+print(f'\nhappy unique values{dfhappy.happy.unique()}')
 
 #%%[markdown]
 # Analyzing ballet
 print(f'\nBallot values:\n{dfhappy.ballet.unique()}')
 # Converting them into characters a, b, c, and d
-dfhappy.ballet = dfhappy.ballet.replace({'Ballot a': 'a', 'Ballot b': 'b', 'Ballot c': 'c', 'Ballot d': 'd'})
+def convertBallet(row):
+  ballet = row['ballet']
+  try: return ballet.strip().split(' ')[1]
+  except: return np.nan # Then this is an unexpected answer
+dfhappy.ballet = dfhappy.apply(convertBallet, axis=1)
+# dfhappy.ballet = dfhappy.ballet.replace({'Ballot a': 'a', 'Ballot b': 'b', 'Ballot c': 'c', 'Ballot d': 'd'})
 # Values of ballet after the conversion
 print(dfhappy.ballet.unique())
 
