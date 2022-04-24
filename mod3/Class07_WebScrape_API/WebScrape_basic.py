@@ -122,6 +122,8 @@ print("\nReady to continue.")
 # If you know what you want to find, use  the method .find() or .find_all()
 foundlast = soup.find('td', class_='wsod_last') # by tag name and class values
 print(foundlast, '\n')
+
+#%%
 print(foundlast.text) # almost got it
 
 #%%
@@ -163,7 +165,7 @@ print("\nReady to continue.")
 
 #%%
 # Testing...
-print(getStockQuote_v0('aapl')) # works
+print(getStockQuote_v0('MSFT')) # works
 # print(getStockQuote_v0('silly')) # error
 # try to make your codes fool-proof
 
