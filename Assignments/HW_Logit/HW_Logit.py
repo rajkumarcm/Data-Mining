@@ -243,25 +243,21 @@ print(f'The variables in the model would be\n{reg_cnames}')
 # something that is uncommon. If it was for the project, then yes, I certainly would be willing to invest time in understanding
 # how the game works. I do not understand what hometeam and awayteams are?
 # This does not show whether or not I understand logistic regression instead lack of understanding of the game itself.
-subset = pd.DataFrame(np.zeros([0, 9]), columns=reg_cnames)
-hometeam = nfl.HomeTeam.unique()
-y_true = [] 
-# I am somewhat skeptic about what homekick is so ended up using this. 
-# I think it would have been best if you would have provided us with description for all attributes
-for row in nfl.iterrows():
-       if row[1]['kickteam'] in hometeam:
-              tmp_row = row[1][reg_cnames]
-              subset = subset.append(tmp_row)
-              y_true.append(row[1]['GOOD'])
+subset_ht = nfl.loc[nfl.homekick==1, reg_cnames]
+subset_at = nfl.loc[nfl.homekick==0, reg_cnames]
+y_ht_true = nfl.loc[nfl.homekick==1, 'GOOD']
+y_at_true = nfl.loc[nfl.homekick==0, 'GOOD']
 
-print(f'Yes it has very good chances of making goals as the chances of good kicking is: {round(lr.score(subset, y_true)*100, 2)}%')
+print(f'Yes it has very good chances of making goals as the chances of good kicking is: \
+{round(lr.score(subset_ht, y_ht_true)*100, 2)}%')
 
+#%%
 #  
 # ## Question 8    
 # From what you found, do home teams and road teams have different chances of making a successful field goal? 
 # If one does, is that true for all distances, or only with a certain range?
 # 
-
+print(f'They almost have same chance of making a goal and the probability would be {round(lr.score(subset_at, y_at_true)*100, 2)}%')
 
 # %%
 # titanic.dropna()
