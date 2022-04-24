@@ -4,7 +4,9 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn import cluster
 import dm6103 as dm
+from sklearn.linear_model import *
 
 # Part I
 titanic = dm.api_dsLand('Titanic', 'id')
@@ -153,19 +155,111 @@ print(df_metrics)
 # | Missed | If the kick misses the mark | either Missed |  
 # | Blocked | If the kick is blocked by the defense | or blocked |  
 # 
+
 #%% 
 # ## Question 5  
 # With the nfl dataset, perform some summary visualizations.  
-# 
+plt.subplots()
+sns.histplot(nfl.loc[:, 'min'], kde=True)
+plt.show()
+team_kick_perf = nfl.loc[:, ['kickteam', 'distance']].groupby('kickteam').agg(np.mean)
+
+from sklearn.cluster import KMeans
+n_clusters = 50
+cluster_indices = KMeans(n_clusters=50).fit_predict(X=nfl.loc[:, ['min']])
+subset = nfl.copy()
+subset['cluster'] = cluster_indices
+
+min_distance_perf = subset.loc[:, ['cluster', 'min', 'distance']].groupby(['cluster']).agg(np.mean)
+min_distance_perf.sort_values(by='min', inplace=True)
+plt.figure()
+plt.plot(min_distance_perf.loc[:, 'min'], min_distance_perf.distance, '.b')
+plt.xlabel('Minutes')
+plt.ylabel('Distance')
+plt.title('Performance at the end')
+plt.grid(True)
+plt.show()
+
+qtr_gkick = pd.crosstab(nfl.qtr, nfl.GOOD)
+plt.figure()
+qtr_gkick.plot.bar()
+plt.title('Kicks in each quarter')
+plt.grid(True)
+plt.show()
+
+min_kick = pd.DataFrame(np.zeros([n_clusters, 3]), columns=['minutes', 'Good_kicks', 'Bad_kicks']) # change the 100 to dynamic
+for c in range(n_clusters): # Change the 100 to dynamic
+       tmp_subset = subset.loc[subset.cluster==c]
+       min_kick.iloc[c, 0] = tmp_subset.loc[:, 'min'].mean()
+       min_kick.iloc[c, 1] = tmp_subset.loc[:, 'GOOD'].sum()
+       min_kick.iloc[c, 2] = tmp_subset.shape[0] - tmp_subset.loc[:, 'GOOD'].sum()
+
+plt.figure()
+plt.plot(min_kick.minutes, min_kick.Good_kicks, '.b', linewidth=1, label='Good Kicks')
+plt.plot(min_kick.minutes, min_kick.Bad_kicks, '.r', linewidth=1, label='Bad kicks')
+plt.xlabel('Minutes')
+plt.ylabel('Good kicks')
+plt.grid(True)
+plt.title('How many good kicks at each average minute')
+plt.ylim([0, 50]) # Ignore that one outlier
+plt.show()
+
+plt.figure(figsize=(15, 12))
+sns.heatmap(nfl.loc[:, nfl.columns!='season'].corr(), annot=True)
+plt.show()
+
+#%%[markdown]
+# Confidence interval of average minute during which the good kick took place.
+#%%
+import scipy.stats as st
+from sklearn.metrics import f1_score
+st.norm.interval(alpha=0.95,
+                 loc=nfl.loc[nfl.GOOD==1, 'min'].mean(),
+                 scale=st.sem(nfl.loc[nfl.GOOD==1, 'min']))
+
 # ## Question 6  
-# Using the SciKitLearn library, build a logistic regression model overall (not individual team or kicker) to predict the chances of a successful field goal. What variables do you have in your model? 
-# 
+# Using the SciKitLearn library, build a logistic regression model overall (not individual team or kicker) to predict the chances of a 
+# successful field goal. What variables do you have in your model? 
+
+# I don't know what field goal means... I guess a good kick
+
+reg_cnames = ['min', 'sec', 'ydline', 'distance', 'defscore', 'down', 'togo', 'kickdiff', 'offscore']
+lr = LogisticRegressionCV(Cs=[0.01], cv=5, scoring='f1').fit(nfl.loc[:, reg_cnames], nfl.GOOD)
+plt.figure()
+plt.plot(lr.coef_.flatten())
+plt.grid(True)
+plt.title('Coefficients')
+plt.show()
+
+print(f'Scores across k fold:\n{lr.scores_[1]}')
+print(f'The variables in the model would be\n{reg_cnames}')
+
+#%%
 # ## Question 7  
-# Someone has a feeling that home teams are more relaxed and have a friendly crowd, they should kick better field goals. Use your model to find out if that is subtantiated or not. 
-# 
+# Someone has a feeling that home teams are more relaxed and have a friendly crowd, they should kick better field goals. 
+# Use your model to find out if that is subtantiated or not. 
+
+# Football is not my area of expertise and for the assignment, I do not find that it is appropriate to ask someone to learn 
+# something that is uncommon. If it was for the project, then yes, I certainly would be willing to invest time in understanding
+# how the game works. I do not understand what hometeam and awayteams are?
+# This does not show whether or not I understand logistic regression instead lack of understanding of the game itself.
+subset = pd.DataFrame(np.zeros([0, 9]), columns=reg_cnames)
+hometeam = nfl.HomeTeam.unique()
+y_true = [] 
+# I am somewhat skeptic about what homekick is so ended up using this. 
+# I think it would have been best if you would have provided us with description for all attributes
+for row in nfl.iterrows():
+       if row[1]['kickteam'] in hometeam:
+              tmp_row = row[1][reg_cnames]
+              subset = subset.append(tmp_row)
+              y_true.append(row[1]['GOOD'])
+
+print(f'Yes it has very good chances of making goals as the chances of good kicking is: {round(lr.score(subset, y_true)*100, 2)}%')
+
 #  
 # ## Question 8    
-# From what you found, do home teams and road teams have different chances of making a successful field goal? If one does, is that true for all distances, or only with a certain range?
+# From what you found, do home teams and road teams have different chances of making a successful field goal? 
+# If one does, is that true for all distances, or only with a certain range?
 # 
 
 
