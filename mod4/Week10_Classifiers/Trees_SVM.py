@@ -42,7 +42,7 @@ print("\nReady to continue.")
 
 #%%
 # Instantiate dtree
-dtree_admit1 = DecisionTreeClassifier(max_depth=2, random_state=1)
+dtree_admit1 = DecisionTreeClassifier(max_depth=3, random_state=1)
 # Fit dt to the training set
 dtree_admit1.fit(X_train,y_train)
 # Predict test set labels
@@ -337,9 +337,9 @@ export_graphviz(regtree1, out_file = filename + '.dot' , feature_names =['prot',
 # XCode_cli (command-line-interface, not installed by default from Mac), and 
 # that takes quite a while. 
 # 
-# import pydot
-# (graph,) = pydot.graph_from_dot_file(filename+'.dot')
-# graph.write_png(filename+'.png')
+import pydot
+(graph,) = pydot.graph_from_dot_file(filename+'.dot')
+graph.write_png(filename+'.png')
 
 
 print("\nReady to continue.")
@@ -362,8 +362,8 @@ clf4 = SVC()
 clf5 = DecisionTreeClassifier()
 clf6 = KNeighborsClassifier(n_neighbors=3) 
 classifiers = [clf1,clf2] # use even numbers to avoid issue for now
-# classifiers.append(clf3)
-classifiers.append(clf4)
+classifiers.append(clf3)
+# classifiers.append(clf4)
 classifiers.append(clf5)
 # classifiers.append(clf6)
 # You can try adding clf3 and clf6, but KNN takes a long time to render.
@@ -453,7 +453,7 @@ print("\nReady to continue.")
 
 #%%
 # Apply SVM and print scores
-svc = SVC()
+svc = SVC(kernel='rbf')
 svc.fit(X_train,y_train)
 print(f'svc train score:  {svc.score(X_train,y_train)}')
 print(f'svc test score:  {svc.score(X_test,y_test)}')
@@ -469,7 +469,8 @@ from sklearn.model_selection import cross_val_score
 # Set n_jobs to -1 in order to exploit all CPU cores in computation
 # scoring for classifiers: accuracy, f1, recall, roc_auc, etc
 # https://scikit-learn.org/stable/modules/model_evaluation.html
-lr_cv_acc = cross_val_score(lr, X_train, y_train, cv= 10, scoring='accuracy' )
+lr_cv_acc = cross_val_score(lr, X_train, y_train, cv= 10, scoring='accuracy',
+                            n_jobs=-1 )
 # lr_cv_acc = cross_val_score(lr, X_train, y_train, cv= 10, scoring='accuracy', n_jobs=-1 )
 #
 # Let us use another *MAGIC PYTHON* interface

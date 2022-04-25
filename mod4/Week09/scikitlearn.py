@@ -116,7 +116,7 @@ plt.show()
 # Or try seaborn
 import seaborn as sns
 sns.set()
-sns.pairplot(xpizza)
+sns.pairplot(xpizza.reset_index())
 # plt.title("seaborn pairplot")
 plt.show()
 
