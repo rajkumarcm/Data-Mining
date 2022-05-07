@@ -186,7 +186,9 @@ class myModel:
 
   # other methods/functions
   def predictGrowthFactor( self, person ): # this is the MONTHLY growth FACTOR
-    factor = 1 + self.b_0 + self.b_age( person["age"] ) + self.b_education( person['education'] ) + self.b_ethnic( person['ethnic'] ) + self.b_gender( person['gender'] ) + self.b_income( person['income'] ) + self.b_industry( person['industry'] ) + self.b_marital( ['marital'] )
+    factor = 1 + self.b_0 + self.b_age( person["age"] ) + self.b_education( person['education'] ) + \
+             self.b_ethnic( person['ethnic'] ) + self.b_gender( person['gender'] ) + \
+             self.b_income( person['income'] ) + self.b_industry( person['industry'] ) + self.b_marital( ['marital'] )
     # becareful that age00 and income00 are the values of the initial record of the dataset/dataframe. 
     # After some time, these two values might have changed. We should use the current values 
     # for age and income in these calculations.
@@ -200,7 +202,11 @@ class myModel:
     # the right codes should be no longer than a few lines.
     # If possible, please also consider the fact that the person is getting older by the month. 
     # The variable age value keeps changing as we progress with the future prediction.
-    return # ??? need to return the income level after n months.
+    #return # ??? need to return the income level after n months.
+    for i in range(n):
+      person.age += (1/12) * n
+      person.income = self.predictIncome(person)
+    return person.income
 
 
 
@@ -216,7 +222,8 @@ print("\nReady to continue.")
 #%%
 # Now try the two models on some versions of different people. 
 # See what kind of range you can get. Plato is here for you as an example.
-# industry: 0-leisure n hospitality, 1-retail , 2- Education 17024, 3-Health, 4-construction, 5-manufacturing, 6-professional n business, 7-finance
+# industry: 0-leisure n hospitality, 1-retail , 2- Education 17024, 3-Health, 4-construction,
+#           5-manufacturing, 6-professional n business, 7-finance
 # gender: 0-female, 1-male
 # marital: 0-never, 1-married, 2-divorced, 3-widowed
 # ethnic: 0, 1, 2 
@@ -248,12 +255,16 @@ print("\nReady to continue.")
 # # Evolution (Part III - 25%)
 # 
 # We want to let the 24k people in WORLD#2 to evolve, for 360 months. You can either loop them through, and 
-# create a new income or incomeFinal variable in the dataframe to store the new income level after 30 years. Or if you can figure out a way to do 
-# broadcasting the predict function on the entire dataframem that can work too. If you loop through them, you can also consider 
-# using Person class to instantiate the person and do the calcuations that way, then destroy it when done to save memory and resources. 
+# create a new income or incomeFinal variable in the dataframe to store the new income level after 30 years. '
+# Or if you can figure out a way to do
+# broadcasting the predict function on the entire dataframem that can work too. If you loop through them,
+# 'you can also consider
+# using Person class to instantiate the person and do the calcuations that way, then destroy it when done to
+# 'save memory and resources.
 # If the person has life changes, it's much easier to handle it that way, then just tranforming the dataframe directly.
 # 
-# We have just this one goal, to see what the world look like after 30 years, according to the two models (utopModel and biasModel). 
+# We have just this one goal, to see what the world look like after 30 years, according to the two models
+# (utopModel and biasModel).
 # 
 # Remember that in the midterm, world1 in terms of gender and ethnic groups, 
 # there were not much bias. Now if we let the world to evolve under the 
@@ -262,7 +273,33 @@ print("\nReady to continue.")
 # 
 # Answer this in terms of distribution of income only. I don't care about 
 # other utopian measures in this question here. 
-# 
+#
+tmp_world2 = world2.copy()
+tmp_world2.rename(columns={"age00":"age", "income00":"income"}, inplace=True) # We should only not change Person object's income00 or age00
+
+world2['incomeUtop'] = list(map(lambda x: utopModel.predictFinalIncome(360, Person(x[1])), tmp_world2.iterrows()))
+world2['incomeBias'] = list(map(lambda x: biasModel.predictFinalIncome(360, Person(x[1])), tmp_world2.iterrows()))
+del tmp_world2
+
+gender_income = world2.melt(id_vars=['gender'], value_vars=['incomeUtop', 'incomeBias'])
+ethnic_income = world2.melt(id_vars=['ethnic'], value_vars=['incomeUtop', 'incomeBias'])
+
+from matplotlib import pyplot as plt
+import seaborn as sns
+fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+sns.boxplot(data=gender_income, x='variable', y='value', hue='gender', ax=axes[0])
+sns.boxplot(data=ethnic_income, x='variable', y='value', hue='ethnic', ax=axes[1])
+axes[0].set_title('Gender bias after evolving for 360 months')
+axes[1].set_title('Ethnic bias after evolving for 360 months')
+axes[0].set_xlabel('Model')
+axes[1].set_xlabel('Model')
+axes[0].set_ylabel('Income')
+axes[1].set_ylabel('Income')
+plt.show()
+
+#%%[markdown]
+# The bias is very visible from the plots. While utopia model does not show any bias in terms of income after evolving
+# for 360 months, bias model clearly shows both ethnic and gender bias.
 
 #%% 
 # # Reverse Action (Part IV - 25%)
@@ -273,8 +310,63 @@ print("\nReady to continue.")
 # Let us now put in place some policy action to reverse course, and create a revser bias model:
 revbiasModel = myModel( { "gender": -1, "ethnic": -1 } ) # revsered bias, to right what is wronged gradually.
 
-# If we start off with Word 1 on this revbiasModel, is there a chance for the world to eventual become fair like World #2? If so, how long does it take, to be fair for the different genders? How long for the different ethnic groups? 
+# If we start off with Word 1 on this revbiasModel, is there a chance for the world to eventual become fair like
+# World #2? If so, how long does it take, to be fair for the different genders? How long for the different ethnic groups?
 
-# If the current model cannot get the job done, feel free to tweak the model with more aggressive intervention to change the growth rate percentages on gender and ethnicity to make it work. 
+# If the current model cannot get the job done, feel free to tweak the model with more aggressive intervention
+# to change the growth rate percentages on gender and ethnicity to make it work.
 
 #%%
+tmp_world1 = world1.copy()
+tmp_world1.rename(columns={"age00":"age", "income00":"income"}, inplace=True) # same as I did with tmp_world2
+from scipy.stats import ttest_ind, f_oneway
+
+best_d_gender = 0
+best_d_ethnic = 0
+for m in range(360):
+  world1['incomeReverse'] = list(map(lambda x: revbiasModel.predictFinalIncome(360, Person(x[1])), tmp_world1.iterrows()))
+
+  _, pvalue_gender = ttest_ind(world1.loc[world1.gender==1, 'incomeReverse'],
+                               world1.loc[world1.gender==0, 'incomeReverse'], equal_var=False)
+  if pvalue_gender > 0.05:
+    best_d_gender = m
+
+  _, pvalue_ethnic = f_oneway(world1.loc[world1.ethnic==0, 'incomeReverse'],
+                              world1.loc[world1.ethnic==1, 'incomeReverse'],
+                              world1.loc[world1.ethnic==2, 'incomeReverse'])
+  if pvalue_ethnic > 0.05:
+    best_d_ethnic = m
+
+  if best_d_ethnic > 0 and best_d_gender > 0:
+    break
+
+del tmp_world1
+print(f'The number of months it takes to reverse the bias both in terms of gender and ethnicity would be '
+      f'{max(best_d_ethnic, best_d_gender)}')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
