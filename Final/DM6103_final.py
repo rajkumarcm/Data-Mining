@@ -43,6 +43,55 @@ print("\nReady to continue.")
 #   7. finance   
 # 
 
+#%%
+# Since you mentioned feature importance, I thought Decision Tree would be more appropriate
+#%%
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix
+from matplotlib import pyplot as plt
+import seaborn as sns
+
+tmp_world1 = world1.copy()
+tmp_world2 = world2.copy()
+
+tmp_world = pd.concat([tmp_world1, tmp_world2], axis=0)
+tmp_world['world'] = ['World1'] * tmp_world1.shape[0] + ['World2'] * tmp_world2.shape[0]
+del tmp_world1
+del tmp_world2
+
+X_train, X_test, y_train, y_test = train_test_split(tmp_world.loc[:, tmp_world.columns != 'world'],
+                                                    tmp_world.world, test_size=0.2, random_state=1234)
+
+tree = DecisionTreeClassifier(max_depth=4, min_samples_leaf=0.1, random_state=1234)
+tree.fit(X_train, y_train) # max_depth=6 gives better score
+
+# evaluation
+y_train_pred = tree.predict(X_train)
+y_test_pred = tree.predict(X_test)
+
+cm = confusion_matrix(y_test, y_test_pred)
+importance = pd.DataFrame({'variable':X_train.columns, 'importance':tree.feature_importances_})
+plt.figure()
+sns.barplot(data=importance, x='variable', y='importance')
+plt.title('Bias is very clear')
+plt.show()
+
+from sklearn.tree import plot_tree, export_graphviz
+fig = plt.figure(figsize=(25,20))
+_ = plot_tree(tree,
+               feature_names=tree.feature_names_in_,
+               class_names=tree.classes_,
+               filled=True)
+plt.show()
+
+#%%[markdown]
+# The bias is very clear from the first bar plot. The Decision tree uses both gender and ethnicity to classify between the two worlds that says these are the two features that distinguishes them.  
+# From the tree plot, I can see:  
+# 1. At the first level i.e. level after the root node, most of the data that went to gender criter were classified as World1.
+# 2. If you notice carefully, at the first level i.e., level after the root node, most of the data that went through ethnic and gender in the following level were classified as World1. Whereas in case of World2, they did not go through the gender criteria instead a terminal node was created at the second level itself classifying observations as World2.  
+#
+# I do understand there are cases when both World1 and World2 do pass through both gender and ethnic criterias, but talking from the perspective of "majority" of cases, I clearly see gender criteria always classifies World1 predominantly than World2.  
 
 #%% [markdown]
 #
@@ -204,9 +253,15 @@ class myModel:
     # The variable age value keeps changing as we progress with the future prediction.
     #return # ??? need to return the income level after n months.
     for i in range(n):
-      person.age += (1/12) * n
+      person.age += 1/12
       person.income = self.predictIncome(person)
-    return person.income
+    return person.age, person.income
+
+  def helper_predictFinalIncome(self, m_evolved, n, person):
+    if n < m_evolved:
+      raise ValueError("months evolved cannot be higher than the number of months yet to evolve")
+    m = n - m_evolved
+    return self.predictFinalIncome(m, person)
 
 
 
@@ -236,7 +291,7 @@ plato = Person( { "age": 58, "education": 20, "gender": 1, "marital": 0, "ethnic
 print(f'utop: {utopModel.predictGrowthFactor(plato)}') # This is the current growth factor for plato
 print(f'utop: {utopModel.predictIncome(plato)}') # This is the income after 1 month
 # Do the following line when your new function predictFinalIncome is ready
-# print(f'utop: {utopModel.predictFinalIncome(months,plato)}')
+print(f'utop: {utopModel.predictFinalIncome(months,plato)[1]}')
 #
 # If plato ever gets a raise, or get older, you can update the info with a dictionary:
 # plato.update( { "age": 59, "education": 21, "marital": 1, "income": 130000 } )
@@ -246,7 +301,7 @@ aristotle = Person( { "age": 58, "education": 20, "gender": 1, "marital": 0, "et
 print(f'bias: {biasModel.predictGrowthFactor(aristotle)}') # This is the current growth factor for aristotle
 print(f'bias: {biasModel.predictIncome(aristotle)}') # This is the income after 1 month
 # Do the following line when your new function predictFinalIncome is ready
-# print(f'bias: {biasModel.predictFinalIncome(months,aristotle)}')
+print(f'bias: {biasModel.predictFinalIncome(months,aristotle)[1]}')
 
 print("\nReady to continue.")
 
@@ -273,12 +328,12 @@ print("\nReady to continue.")
 # 
 # Answer this in terms of distribution of income only. I don't care about 
 # other utopian measures in this question here. 
-#
+#%%
 tmp_world2 = world2.copy()
 tmp_world2.rename(columns={"age00":"age", "income00":"income"}, inplace=True) # We should only not change Person object's income00 or age00
 
-world2['incomeUtop'] = list(map(lambda x: utopModel.predictFinalIncome(360, Person(x[1])), tmp_world2.iterrows()))
-world2['incomeBias'] = list(map(lambda x: biasModel.predictFinalIncome(360, Person(x[1])), tmp_world2.iterrows()))
+world2.loc[:, ['age', 'incomeUtop']] = list(map(lambda x: utopModel.predictFinalIncome(360, Person(x[1])), tmp_world2.iterrows()))
+world2.loc[:, ['age', 'incomeBias']] = list(map(lambda x: biasModel.predictFinalIncome(360, Person(x[1])), tmp_world2.iterrows()))
 del tmp_world2
 
 gender_income = world2.melt(id_vars=['gender'], value_vars=['incomeUtop', 'incomeBias'])
@@ -323,27 +378,61 @@ from scipy.stats import ttest_ind, f_oneway
 
 best_d_gender = 0
 best_d_ethnic = 0
-for m in range(360):
-  world1['incomeReverse'] = list(map(lambda x: revbiasModel.predictFinalIncome(360, Person(x[1])), tmp_world1.iterrows()))
+start_m = 1
+m_prev = 0
+m_new = start_m
+age_gender_hist = {}
+for m in range(start_m, 600, 12):
+    tmp_world1.loc[:, ['age', 'income']] = list(map(lambda x: revbiasModel.helper_predictFinalIncome(m_prev, m, Person(x[1])),
+                                        tmp_world1.iterrows()))
+    age_gender_hist[f'{m}'] = pd.DataFrame({'income':tmp_world1.income, 'gender':tmp_world1.gender,
+                                            'ethnic':tmp_world1.ethnic})
 
-  _, pvalue_gender = ttest_ind(world1.loc[world1.gender==1, 'incomeReverse'],
-                               world1.loc[world1.gender==0, 'incomeReverse'], equal_var=False)
-  if pvalue_gender > 0.05:
-    best_d_gender = m
+    _, pvalue_gender = ttest_ind(tmp_world1.loc[tmp_world1.gender==1, 'income'],
+                                 tmp_world1.loc[tmp_world1.gender==0, 'income'], equal_var=False)
+    if pvalue_gender > 0.05:
+        best_d_gender = m
+    _, pvalue_ethnic = f_oneway(tmp_world1.loc[tmp_world1.ethnic==0, 'income'],
+                              tmp_world1.loc[tmp_world1.ethnic==1, 'income'],
+                              tmp_world1.loc[tmp_world1.ethnic==2, 'income'])
+    if pvalue_ethnic > 0.05:
+        best_d_ethnic = m
+    
+    if best_d_ethnic > 0 and best_d_gender > 0:
+        break
+    m_prev = m
 
-  _, pvalue_ethnic = f_oneway(world1.loc[world1.ethnic==0, 'incomeReverse'],
-                              world1.loc[world1.ethnic==1, 'incomeReverse'],
-                              world1.loc[world1.ethnic==2, 'incomeReverse'])
-  if pvalue_ethnic > 0.05:
-    best_d_ethnic = m
+#%%[markdown]
+# Gender Bias
+#%%
+keys = list(age_gender_hist.keys())
+for i in range(18, 26):
+  key = keys[i]
+  plt.figure()
+  sns.boxplot(x=tmp_world1.gender, y=age_gender_hist[f'{key}'].income, showfliers=False)
+  plt.title(f'key: {key}')
+plt.show()
 
-  if best_d_ethnic > 0 and best_d_gender > 0:
-    break
+#%%[markdown]
+# Ethnic Bias
+#%%
+for key in keys:
+  plt.figure()
+  sns.boxplot(x=tmp_world1.ethnic, y=age_gender_hist[f'{key}'].income, showfliers=False)
+  plt.title(f'key: {key}')
+plt.show()
 
+#%%[markdown]
+# As you could see from the plots, it takes approximately 301 months for the gender bias to reverse, while in case ethnic bias, it takes about 
+
+#%%[markdown]
+# The number of months it takes to reverse the gender bias would be 301, whereas in case of
+# reversing ethnic bias it takes approximately 565 months.
+#
+# As you already mentioned, I was not able to bring all three ethnicities to the same level and I think it is difficult to engineer soft landing for everyone.
+#
+#%%
 del tmp_world1
-print(f'The number of months it takes to reverse the bias both in terms of gender and ethnicity would be '
-      f'{max(best_d_ethnic, best_d_gender)}')
-
 
 
 
